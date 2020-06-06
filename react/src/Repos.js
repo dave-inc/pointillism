@@ -119,8 +119,8 @@ class Repos extends React.Component {
             <input type="password" value={repo.token} onClick={this.toggleVisible} />
             <Button color="secondary" onClick={() => this.onDelete(repo.name)}>Delete</Button>
             <ul className="graphs">
-              {graphs.map((url) =>
-                <li><a href={url}><img src={url} alt="DOT graph" /></a></li>)}
+              {graphs.map((graph) =>
+                <li><a href={graph.url}><img src={graph.url} alt={graph.url} /></a></li>)}
             </ul>
           </li>
         })}
