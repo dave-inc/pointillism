@@ -1,5 +1,8 @@
+from pytest import fixture
 from point.renderer.render import get_pipe
-from point.renderer.branding import brand
+from lxml import etree
+from io import BytesIO
+from point.renderer.branding import get_height, set_height
 
 # TODO shared fixtures
 BODY = """
@@ -9,7 +12,16 @@ digraph Test {
 """
 
 
-# class TestBranding:
-#     def test_url(self):
-#         body = get_pipe(BODY, format="svg")
-#         assert 'pointillism.io' in body
+class TestBranding:
+    @fixture
+    def body(self):
+        return get_pipe(BODY, format="svg")
+
+    def test_url(self, body):
+        assert 'pointillism.io' in body
+
+    def test_svg_height(self, body):
+        root = etree.parse(body).getroot()
+
+        assert get_height(root)[0] == 100
+
