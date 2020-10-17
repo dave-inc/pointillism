@@ -1,5 +1,4 @@
 import logging
-from flask import request
 from werkzeug.exceptions import Forbidden, InternalServerError, NotFound
 from pybrake import Notifier
 
@@ -21,10 +20,11 @@ def add_exception_handling(app):
     if not airbrake_enabled():
         logging.info("Airbrake is not configured. Will not handle exceptions.")
 
+    @app.errorhandler(PtNotFoundException)
     @app.errorhandler(NotFound)
     def error404(error):
         global notifier
-        logging.exception(error)
+        logging.warning(error)
         return "Not Found", 404
 
     @app.errorhandler(Forbidden)
