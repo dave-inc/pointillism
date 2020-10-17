@@ -58,3 +58,21 @@ workflows:
       # - deploy:
       #     requires:
       #       - image
+      - deploy staging:
+          type: approval
+          requires:
+            - test
+            - build image
+            - push image
+      - staging deploy:
+          requires:
+            - deploy staging
+      - deploy prod:
+          type: approval
+          requires:
+            - test
+            - build image
+            - push image
+      - prod deploy:
+          requires:
+            - deploy prod
