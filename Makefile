@@ -80,7 +80,7 @@ versionBump:
 	@echo "tagged $(VERSION_NEW)"
 
 test: compileAll
-	$(PYTHON) -m pytest -s --cov=point --junitxml="result.xml" $(TEST)
+	$(PYTHON) -m pytest -s --cov=point --junitxml="test-results/result.xml" $(TEST)
 
 integ: compileAll
 	$(PYTHON) -s -m pytest -s -c pytest.integ.ini $(TEST)
