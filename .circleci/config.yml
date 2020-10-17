@@ -16,7 +16,9 @@ jobs:
           name: test
           command: make test
       - store_test_results:
-          path: test-results/result.xml
+          path: test-results
+      - store_artifacts:
+          path: test-results
       - run:
           name: build image
           command: make image
