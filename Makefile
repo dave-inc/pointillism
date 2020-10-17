@@ -1,7 +1,9 @@
 include Makefile.admin
-IMAGE := tgrayson/pointillism
 VERSION_NEW := $(shell ./bin/version_next)
 
+ACCOUNT=pointillism
+PROJECT=pointillism
+IMAGE := $(ACCOUNT)/$(PROJECT)
 FLASK_RUN_PORT?=5000
 PYTHON:=python3
 VENV=.venv
@@ -10,7 +12,6 @@ DEPLOY_HOST?=pointillism.io
 HOST?=https://raw.githubusercontent.com
 TEST_HOST?=http://staging.pointillism.io
 TEST?=test
-PROJECT=pointillism
 ADMIN_USER?=admin@ipsumllc.com
 ADMIN_PASS?=tugboat
 VERSION_NEW := ${shell git tag -l v[0-9]* | sort -V -r | head -n1 |  awk '/v/{split($$NF,v,/[.]/); $$NF=v[1]"."v[2]"."++v[3]}1'}
@@ -68,8 +69,9 @@ imageTest:
 	@docker run --name $(PROJECT) --env-file ENV -d -p 5001:5001 --restart=always $(IMAGE):latest
 
 deploy:
+	@echo "deploying $(ACCOUNT)/$(PROJECT)"
 	cat ./bin/deploy.remote.sh | ssh $(DEPLOY_HOST)
-	TEST_HOST=https://pointillism.io GIT_TOKEN=123 make smoke
+	# TEST_HOST=https://pointillism.io GIT_TOKEN=123 make smoke
 
 versionBump:
 	@git pull --tags
@@ -99,6 +101,9 @@ smoke:
 status:
 	$(PYTHON) -m status
 
+ssh:
+	ssh pointillism.io
+
 legal: legal/privacy.md legal/terms.md
 	pandoc -f markdown -t html5 -o point/server/static/privacy.html legal/privacy.md 
 	pandoc -f markdown -t html5 -o point/server/static/terms.html legal/terms.md 
@@ -111,5 +116,4 @@ legal: legal/privacy.md legal/terms.md
 	# -c style.css
 
 validate: test integ image
-
 .PHONY: test legal status
