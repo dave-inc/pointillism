@@ -1,4 +1,5 @@
 include Makefile.admin
+SHELL := /bin/bash
 VERSION_NEW := $(shell ./bin/version_next)
 
 ACCOUNT=pointillism
@@ -14,6 +15,7 @@ TEST_HOST?=http://staging.pointillism.io
 TEST?=test
 ADMIN_USER?=admin@ipsumllc.com
 ADMIN_PASS?=tugboat
+VERSION := ${shell git tag -l v[0-9]* | sort -V -r | head -n1}
 VERSION_NEW := ${shell git tag -l v[0-9]* | sort -V -r | head -n1 |  awk '/v/{split($$NF,v,/[.]/); $$NF=v[1]"."v[2]"."++v[3]}1'}
 PLANT_JAR?=plantuml.jar
 
@@ -59,10 +61,13 @@ package: compile
 
 image: package 
 	docker build -t $(IMAGE) .
+	docker tag $(IMAGE):latest $(IMAGE):$(VERSION)
 
 imagePush: image # versionBump
 	echo "$(DOCKER_PASS)" | docker login -u "$(DOCKER_USER)" --password-stdin
 	docker push $(IMAGE)
+	docker push $(IMAGE):$(VERSION)
+	docker push $(IMAGE):latest
 
 imageTest:
 	@docker stop pointillism && docker rm pointillism || echo "pointillism not running."
@@ -70,7 +75,7 @@ imageTest:
 
 deploy:
 	@echo "deploying $(ACCOUNT)/$(PROJECT)"
-	cat ./bin/deploy.remote.sh | ssh $(DEPLOY_HOST)
+	cat ENV.prod <(echo "export DOCKER_TAG=$(VERSION)") ./bin/deploy.remote.sh | ssh $(DEPLOY_HOST)
 	# TEST_HOST=https://pointillism.io GIT_TOKEN=123 make smoke
 
 versionBump:
