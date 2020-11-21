@@ -1,6 +1,10 @@
 IMAGE := tgrayson/pointillism
+SHELL:=bash
+include Makefile.admin
 VERSION_NEW := $(shell ./bin/version_next)
 
+# ACCOUNT=pointillism
+# PROJECT=pointillism
 FLASK_RUN_PORT?=5000
 PYTHON:=python3
 VENV=.venv
@@ -98,8 +102,13 @@ smoke:
 status:
 	$(PYTHON) -m status
 
+docs:
+	mkdir -p point/server/static/docs
+	cd docs && make html
+	cp -rf docs/build/html/* point/server/static/docs/
+
 legal: legal/privacy.md legal/terms.md
-	pandoc -f markdown -t html5 -o point/server/static/privacy.html legal/privacy.md 
+	pandoc -f markdown -t html5 -o point/server/static/privacy.html legal/privacy.md
 	pandoc -f markdown -t html5 -o point/server/static/terms.html legal/terms.md 
 	pandoc -f markdown -t html5 -o point/server/static/do-not-sell.html legal/do-not-sell.md 
 	pandoc -f markdown -t html5 -o react/public/privacy.html legal/privacy.md 
@@ -110,5 +119,4 @@ legal: legal/privacy.md legal/terms.md
 	# -c style.css
 
 validate: test integ image
-
-.PHONY: test legal status
+.PHONY: test legal status docs
