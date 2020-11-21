@@ -4,7 +4,7 @@ VERSION_NEW := $(shell ./bin/version_next)
 
 ACCOUNT=pointillism
 PROJECT=pointillism
-IMAGE := tgrayson/pointillism
+IMAGE:=$(ACCOUNT)/$(PROJECT)
 
 FLASK_RUN_PORT?=5000
 PYTHON:=python3
