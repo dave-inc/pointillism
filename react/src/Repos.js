@@ -45,10 +45,6 @@ class Repos extends React.Component {
     event.preventDefault();
     const data = new FormData(document.forms[0]);
 
-    this.setState({
-            ...this.state, 
-            errorMessage: `could not add repo "${document.forms[0].repo.value}"`
-          });
     fetch('/v1/repos', {
         method: "POST",
         body: data
@@ -98,7 +94,6 @@ class Repos extends React.Component {
     const showDialog = errorMessage !== null;
     const graphs = [];
 
-    console.log(showDialog)
     return (
     <div>
       <Modal isOpen={showDialog}>
