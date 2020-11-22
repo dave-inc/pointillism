@@ -24,13 +24,16 @@ class GitResource:
            self.owner, self.project, self.branch, self.path
         ))
 
-    def __str__(self):
-        # TODO just fetch url, don't decompose?
+    @property
+    def pointillism_path(self):
         if self.should_raw():
-            url = ['https://github.com', self.owner, self.project]
+            url = [self.owner, self.project]
             if self.branch:
                 url.append(self.branch)
             url.append(self.path)
-            return "/".join(url)
+            return "/" + "/".join(url)
         else:
-            return f'https://github.com/{self.owner}/{self.project}/blob/{self.branch}/{self.path}'
+            return f'/{self.owner}/{self.project}/blob/{self.branch}/{self.path}'
+
+    def __str__(self):
+        return 'https://github.com' + self.pointillism_path

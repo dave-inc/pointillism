@@ -19,7 +19,7 @@ IS_DEV = (ENV == "develop")
 
 LANDING_ROUTES = [
     "/profile", "/account", "/repos", "/getting-started",
-    "/about", "/contact", "/paypal/confirm", "/detail"
+    "/about", "/contact", "/paypal/confirm"
 ]
 
 app = Flask(__name__)
@@ -70,7 +70,6 @@ def welcome():
             username=username,
             email=email
         )
-
 
 for route in LANDING_ROUTES:
     app.route(route)(welcome)
