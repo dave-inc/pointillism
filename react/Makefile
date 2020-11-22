@@ -1,4 +1,4 @@
-serve: compile
+server: compile
 	npm start
 
 compile: node_modules
