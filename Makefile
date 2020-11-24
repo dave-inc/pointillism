@@ -19,6 +19,7 @@ ADMIN_PASS?=tugboat
 VERSION := ${shell git tag -l v[0-9]* | sort -V -r | head -n1}
 VERSION_NEW := ${shell git tag -l v[0-9]* | sort -V -r | head -n1 |  awk '/v/{split($$NF,v,/[.]/); $$NF=v[1]"."v[2]"."++v[3]}1'}
 PLANT_JAR?=plantuml.jar
+SERVICE_PORT?=5001
 
 export ENV=develop
 export HOST
@@ -76,7 +77,9 @@ imageTest:
 
 deploy:
 	@echo "deploying $(ACCOUNT)/$(PROJECT)"
-	cat ENV.prod <(echo "export DOCKER_TAG=$(VERSION)") ./bin/deploy.remote.sh | ssh $(DEPLOY_HOST)
+	@cat <(curl -s -u "$(DEPLOY_USER)" https://ipsumllc.com/factors/3/pointillism) \
+ 		<(echo "export SERVICE_PORT=$(SERVICE_PORT)") \
+ 		<(echo "export DOCKER_TAG=$(VERSION)") bin/deploy.remote.sh | ssh $(DEPLOY_HOST)
 	# TEST_HOST=https://pointillism.io GIT_TOKEN=123 make smoke
 
 versionBump:
