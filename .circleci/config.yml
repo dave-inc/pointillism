@@ -42,6 +42,7 @@ jobs:
           fingerprints:
             - "0c:aa:9c:05:11:c3:80:28:b0:67:f9:f2:f8:80:16:96"
             - "56:99:68:c1:e2:41:98:28:87:51:a4:fb:ad:ba:5d:ac"
+            - "SHA256:BvIjOPnp5LiRHFaP/mnnS4F8oJa5qlNS0x7wQf799PU"
       - checkout
       - run:
           name: deploy staging

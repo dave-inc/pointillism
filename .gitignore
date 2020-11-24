@@ -30,3 +30,7 @@ venv/*
 .coverage
 .idea/*
 point/server/static/*
+
+ENV.*
+*.env
+test-results
