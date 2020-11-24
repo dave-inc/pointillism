@@ -25,4 +25,6 @@ jobs:
       - run:
           name: push image
           command: make imagePush
-
+      - run:
+          name: deploy staging
+          command: make deploy DEPLOY_HOST=staging.pointillism.io
