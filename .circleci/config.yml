@@ -55,6 +55,6 @@ workflows:
       - image:
           requires:
             - build
-      - deploy:
-          requires:
-            - image
+      # - deploy:
+      #     requires:
+      #       - image
