@@ -1,0 +1,7 @@
+site_name: pointillism
+site_url: https://pointillism.io
+repo_url: https://github.com/pointillism/pointillism
+site_author: trevor grayson
+nav:
+    - About: 'about/index.html'
+    - pointillism.io: 'https://pointillism.io'
