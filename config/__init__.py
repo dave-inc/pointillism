@@ -31,4 +31,4 @@ SECRET_KEY = urandom(12)
 PLANT_JAR = environ.get("PLANT_JAR", "/opt/plantuml.jar")
 logging.info(f"Using {PLANT_JAR}")
 
-WILL_BRAND = environ.get('WILL_BRAND', False)
+WILL_BRAND = environ.get('WILL_BRAND', "1").lower() in ["1", "true"]
