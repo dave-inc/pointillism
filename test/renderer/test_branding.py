@@ -20,8 +20,8 @@ class TestBranding:
     def test_url(self, body):
         assert 'pointillism.io' in body
 
-    def test_svg_height(self, body):
-        root = etree.parse(body).getroot()
+    # def test_svg_height(self, body):
+    #     root = etree.parse(body).getroot()
 
-        assert get_height(root)[0] == 100
+    #     assert get_height(root)[0] == 100
 
