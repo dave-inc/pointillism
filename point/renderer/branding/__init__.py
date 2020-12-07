@@ -6,7 +6,7 @@ from lxml import etree
 # text - anchor = "end"
 BRANDABLE_FORMATS = ['svg']
 
-BRAND_WIDTH = 140
+BRAND_WIDTH = 112
 BRANDING = """
 <g>
 <text x="{x}" y="{y}"
@@ -19,15 +19,15 @@ BRANDING = """
 
 
 def get_width(svg):
-    height_s = svg.attrib['width']
+    measure = svg.attrib['width']
     index = 0
-    for chr in height_s:
+    for chr in measure:
         if ord(chr) > 58:
             break
         index += 1
 
-    value = int(height_s[:index])
-    type_ = height_s[index:]
+    value = int(measure[:index])
+    type_ = measure[index:]
 
     return (value, type_)
 
