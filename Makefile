@@ -16,7 +16,7 @@ TEST_HOST?=http://staging.pointillism.io
 TEST?=test
 ADMIN_USER?=admin@ipsumllc.com
 ADMIN_PASS?=tugboat
-VERSION := ${shell git tag -l v[0-9]* | sort -V -r | head -n1}
+VERSION ?= ${shell git tag -l v[0-9]* | sort -V -r | head -n1}
 VERSION_NEW := ${shell git tag -l v[0-9]* | sort -V -r | head -n1 |  awk '/v/{split($$NF,v,/[.]/); $$NF=v[1]"."v[2]"."++v[3]}1'}
 PLANT_JAR?=plantuml.jar
 SERVICE_PORT?=5001
@@ -73,7 +73,7 @@ imagePush: image # versionBump
 
 imageTest:
 	@docker stop pointillism && docker rm pointillism || echo "pointillism not running."
-	@docker run --name $(PROJECT) --env-file ENV -d -p 5001:5001 --restart=always $(IMAGE):latest
+	@docker run --name $(PROJECT) --env-file test.env -d -p 5001:5001 --restart=always $(IMAGE):latest
 
 deploy:
 	@echo "deploying $(ACCOUNT)/$(PROJECT)"

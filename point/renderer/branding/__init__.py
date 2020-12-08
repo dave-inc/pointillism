@@ -10,7 +10,8 @@ BRAND_WIDTH = 112
 BRANDING = """
 <g>
 <text x="{x}" y="{y}"
-    stroke="cadetblue"
+    stroke="#1DA1F2"
+    font-size="10px"
     font-family="courier">
     <a href="{url}">pointillism.io</a>
 </text>
@@ -29,7 +30,7 @@ def get_width(svg):
     value = int(measure[:index])
     type_ = measure[index:]
 
-    return (value, type_)
+    return value, type_
 
 def get_height(svg):
     height_s = svg.attrib['height']
@@ -42,7 +43,7 @@ def get_height(svg):
     value = int(height_s[:index])
     type_ = height_s[index:]
 
-    return (value, type_)
+    return value, type_
 
 
 def set_height(svg):
