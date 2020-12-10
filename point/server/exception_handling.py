@@ -1,6 +1,7 @@
 import logging
 from werkzeug.exceptions import Forbidden, InternalServerError, NotFound
 from pybrake import Notifier
+from point.renderer.exceptions import RenderFailure
 
 from .exceptions import PtNotFoundException
 from config import (
@@ -19,6 +20,12 @@ if airbrake_enabled():
 def add_exception_handling(app):
     if not airbrake_enabled():
         logging.info("Airbrake is not configured. Will not handle exceptions.")
+
+    @app.errorhandler(RenderFailure)
+    def error400(error):
+        global notifier
+        logging.warning(error)
+        return "Could not render", 400
 
     @app.errorhandler(PtNotFoundException)
     @app.errorhandler(NotFound)
