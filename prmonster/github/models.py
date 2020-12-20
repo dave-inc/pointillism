@@ -1,0 +1,33 @@
+from json import loads
+
+
+class GHSearchItem:
+    def __init__(self, item):
+        self.path = item['path']
+        self.url = item['url']
+        self.repo = item['repository']['full_name']
+
+    def content_url(self):
+        return f"https://raw.githubusercontent.com/{self.repo}/master/{self.path}>"
+
+    def __str__(self):
+        return f"<GHItem {self.content_url()}" \
+
+
+class GHSearchResponse:
+    def __init__(self, response):
+        self.total = response.get("total_count")
+        self.incomplete = response.get("incomplete_results")
+        self.items = [GHSearchItem(item) for item in response['items']]
+
+    @classmethod
+    def from_json(cls, json):
+        return GHSearchResponse(loads(json))
+
+    @property
+    def count(self):
+        return len(self.items)
+
+    def __str__(self):
+        return f"<GitHubSearch {self.count}/{self.total}, incomplete={self.incomplete}"
+
