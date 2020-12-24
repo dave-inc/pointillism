@@ -16,9 +16,7 @@ while page < 100:
         dots = filter(lambda i: repo == i.repo, resp.items)
         for dot in dots:
             logging.info(dot)
-        dot_refs = client.search("repo:{}%20*.png".format(
-            repo
-        ))
+        dot_refs = client.search("*.png", repo=repo)
         logging.info("dot file references")
         for ref in dot_refs.items:
             logging.info(ref)

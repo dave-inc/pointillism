@@ -18,18 +18,17 @@ HEADERS = {
 }
 DOMAIN = 'api.github.com'
 
-params = dict(
+DEFAULT_PARAMS = dict(
     # generate q in UI and paste here
     # q="extension:dot%20extension:gv",
     per_page="100",
     sort="indexed",
     order="desc"
 )
-URL = '/search/code?' + '&'.join([f"{k}={v}" for k, v in params.items()])
-URL2 = '/search?' + '&'.join([f"{k}={v}" for k, v in params.items()])
+URL = '/search/code?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()])
+URL2 = '/search?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()])
 
 DOT_FILE_SEARCH = "user%3Agithub+user%3Aatom+user%3Aelectron+user%3Aoctokit+user%3Atwitter+extension%3Adot+extension%3Agv&type=code"
-SEARCH_REPO = "repo:{repo} *.png"
 # OR *.svg files
 
 
@@ -38,13 +37,15 @@ class GitHubFileSearchClient:
     def __init__(self):
         self.conn = HTTPSConnection(DOMAIN)
 
-    def url(self, query, page):
-        suffix = "&q=" + query + f"&page={page}"
+    def url(self, query, page, params):
+        qparams = '%20'.join([f"{k}:{v}" for k, v in params.items()])
+        suffix = "&q=" + qparams + "%20" + query + f"&page={page}"
         return URL + suffix
 
-    def search(self, query=DOT_FILE_SEARCH, page=0):
-        print(self.url(query, page))
-        self.conn.request('GET', self.url(query, page), headers=HEADERS)
+    def search(self, query=DOT_FILE_SEARCH, page=0, **params):
+        self.conn.request('GET',
+                          self.url(query, page, params),
+                          headers=HEADERS)
         resp = self.conn.getresponse()
 
         if resp.status == 200:

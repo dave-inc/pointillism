@@ -7,7 +7,7 @@ class GHRepo:
         self.project = project
 
     def __str__(self):
-        return f"{owner}/{project}"
+        return f"Repo\t{self.owner}/{self.project}"
 
 
 class GHSearchItem:
@@ -20,7 +20,7 @@ class GHSearchItem:
         return f"https://raw.githubusercontent.com/{self.repo}/master/{self.path}>"
 
     def __str__(self):
-        return f"<GHItem {self.content_url()}" \
+        return f"GHItem\t{self.content_url()}"
 
 
 class GHSearchResponse:
@@ -44,5 +44,5 @@ class GHSearchResponse:
 
 
     def __str__(self):
-        return f"<GitHubSearch {self.count}/{self.total}, incomplete={self.incomplete}"
+        return f"GitHubSearch\t{self.count}/{self.total}\tincomplete={self.incomplete}"
 
