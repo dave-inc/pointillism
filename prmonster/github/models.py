@@ -1,6 +1,15 @@
 from json import loads
 
 
+class GHRepo:
+    def __init__(self, owner, project):
+        self.owner = owner
+        self.project = project
+
+    def __str__(self):
+        return f"{owner}/{project}"
+
+
 class GHSearchItem:
     def __init__(self, item):
         self.path = item['path']
@@ -27,6 +36,12 @@ class GHSearchResponse:
     @property
     def count(self):
         return len(self.items)
+
+    def repos(self):
+        """return unique repos in results"""
+        repos = set([item.repo for item in self.items])
+        return list(repos)
+
 
     def __str__(self):
         return f"<GitHubSearch {self.count}/{self.total}, incomplete={self.incomplete}"

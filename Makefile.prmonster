@@ -1,0 +1,13 @@
+TMP_DIR?=/tmp/pointillism_prs
+FILE?=test/fixtures/tg.repos
+
+search:
+	python3 -m prmonster.github
+
+clean: 
+	rm -rf $(TMP_DIR)
+
+run: clean
+	python3 -m prmonster $(FILE)
+
+
