@@ -1,3 +1,4 @@
+import logging
 from json import loads
 
 
@@ -17,7 +18,21 @@ class GHSearchItem:
         self.repo = item['repository']['full_name']
 
     def content_url(self):
-        return f"https://raw.githubusercontent.com/{self.repo}/master/{self.path}>"
+        return f"https://raw.githubusercontent.com/{self.repo}/master/{self.path}"
+
+    def filename(self, ext=False):
+        try:
+            return self.path.split("/")[-1].split(".")[0]
+        except Exception as ex:
+            logging.error("Couldn't lazy parse: " + self.path)
+            return None
+
+    def filetype(self):
+        try:
+            return self.path.split(".")[-1]
+        except Exception as ex:
+            logging.error("Couldn't lazy format: " + self.path)
+            return None
 
     def __str__(self):
         return f"GHItem\t{self.content_url()}"
