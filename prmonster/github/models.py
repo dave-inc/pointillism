@@ -18,6 +18,9 @@ class GHSearchItem:
         self.repo = item['repository']['full_name']
 
     def content_url(self):
+        """
+        TODO master may be main, or other branch name
+        """
         return f"https://raw.githubusercontent.com/{self.repo}/master/{self.path}"
 
     def filename(self, ext=False):
@@ -56,7 +59,6 @@ class GHSearchResponse:
         """return unique repos in results"""
         repos = set([item.repo for item in self.items])
         return list(repos)
-
 
     def __str__(self):
         return f"GitHubSearch\t{self.count}/{self.total}\tincomplete={self.incomplete}"

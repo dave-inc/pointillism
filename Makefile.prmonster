@@ -1,8 +1,15 @@
 TMP_DIR?=/tmp/pointillism_prs
 FILE?=test/fixtures/tg.repos
 
+daily: search
+
 search:
 	python3 -m prmonster.github
+
+leads:
+	grep DISCOVERED logs/github_search.log >> github.leads
+	cat github.leads | sort | uniq > github.leads.sorted
+	rm github.leads
 
 clean: 
 	rm -rf $(TMP_DIR)

@@ -1,6 +1,10 @@
+from os import environ
 import logging
 from . import find_dot_repos
 
-logging.basicConfig(level=logging.DEBUG, filename="github_search.log")
+logging.basicConfig(level=logging.DEBUG,
+                    filename="logs/github_search.log")
+logging.getLogger().addHandler(logging.StreamHandler())
 
-find_dot_repos()
+# NOTE: No TARGET_USER searches for most recent.
+find_dot_repos(environ.get("TARGET_USER"))

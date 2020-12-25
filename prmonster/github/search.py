@@ -1,3 +1,4 @@
+import logging
 from os import environ
 from http.client import HTTPSConnection
 from base64 import b64encode
@@ -24,7 +25,8 @@ DEFAULT_PARAMS = dict(
 URL = '/search/code?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()])
 URL2 = '/search?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()])
 
-DOT_FILE_SEARCH = "user%3Agithub+user%3Aatom+user%3Aelectron+user%3Aoctokit+user%3Atwitter+extension%3Adot+extension%3Agv&type=code"
+USER_DOT_FILE_SEARCH = "user%3Agithub+user%3Aatom+user%3Aelectron+user%3Aoctokit+user%3Atwitter+extension%3Adot+extension%3Agv&type=code"
+DOT_FILE_SEARCH = "extension%3Adot+extension%3Agv&type=code"
 # OR *.svg files
 
 
@@ -34,11 +36,13 @@ class GitHubFileSearchClient:
         self.conn = HTTPSConnection(DOMAIN)
 
     def url(self, query, page, params):
-        qparams = '%20'.join([f"{k}:{v}" for k, v in params.items()])
-        suffix = "&q=" + qparams + "%20" + query + f"&page={page}"
+        # TODO confirm + over %20
+        qparams = '+'.join([f"{k}:{v}" for k, v in params.items()])
+        suffix = "&q=" + qparams + "+" + query + f"&page={page}"
         return URL + suffix
 
     def search(self, query=DOT_FILE_SEARCH, page=0, **params):
+        logging.info(f"SEARCHING\t{query}\t{str(params)}")
         self.conn.request('GET',
                           self.url(query, page, params),
                           headers=HEADERS)
