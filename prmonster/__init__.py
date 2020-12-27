@@ -35,21 +35,15 @@ def devour_repos(*repos, dry_run=False):
                 logging.info(f"SKIPPING: {str(repo)}. found 'pointillism.io'")
                 continue
 
-            # update files
-            update_readmes(repo)
-
-            # commit changes
             try:
+                # update files
+                update_readmes(repo)
+
+                # commit changes
                 commit(repo, '"Adding pointillism.io"')
-            except CalledProcessError:
-                logging.error(
-                    f"Commit failure. Does {str(repo)} have DOT files?")
-                continue
 
-            # publish
-            try:
                 if not dry_run:
                     pr(repo)
-            except CalledProcessError:
-                logging.error(
-                    f"PR failure for: {str(repo)}")
+            except CalledProcessError as ex:
+                logging.exception(ex)
+                continue

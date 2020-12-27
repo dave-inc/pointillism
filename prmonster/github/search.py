@@ -1,7 +1,8 @@
 import logging
+import json
 from os import environ
 from http.client import HTTPSConnection
-from base64 import b64encode
+from base64 import b64encode, b64decode
 from .models import *
 
 USER = "trevorgrayson"
@@ -28,6 +29,22 @@ URL2 = '/search?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()])
 USER_DOT_FILE_SEARCH = "user%3Agithub+user%3Aatom+user%3Aelectron+user%3Aoctokit+user%3Atwitter+extension%3Adot+extension%3Agv&type=code"
 DOT_FILE_SEARCH = "extension%3Adot+extension%3Agv&type=code"
 # OR *.svg files
+
+
+class GitHubContent:
+    """
+    Get contents of a github url.
+    May not be used presently.
+    """
+    def __init__(self):
+        self.conn = HTTPSConnection(DOMAIN)
+
+    def fetch(self, url):
+        self.conn.request('GET', url, headers=HEADERS)
+        resp = self.conn.getresponse()
+        if resp.status == 200:
+            return b64decode(json.loads(resp.read())['content'])\
+                .decode("utf8")
 
 
 class GitHubFileSearchClient:

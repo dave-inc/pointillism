@@ -12,6 +12,7 @@ leads:
 	@cat github.leads | sort | uniq > github.leads.sorted
 	@rm github.leads
 	@cp github.leads.sorted github.leads
+	@cat github.leads.sorted | cut -f2 | sort | uniq > leads.repos
 	wc -l github.leads.sorted
 
 leadsList:

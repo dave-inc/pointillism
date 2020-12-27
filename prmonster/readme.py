@@ -2,6 +2,8 @@ from os import path
 from glob import glob
 from prmonster import Repo
 
+POINTILLISM = 'pointillism'  # if found, presume processed
+
 MD_BODY = """
 [
 ![pointillism.io]({url}.svg?theme=auto)
@@ -11,6 +13,10 @@ MD_BODY = """
 MD_FOOTER = """
 Learn more about ![pointillism.io](https://pointillism.io).
 """
+
+
+class RemodificationException(Exception):
+    pass
 
 
 def pointillism_url(repo: Repo, filename, branch='master'):
@@ -26,6 +32,13 @@ def update_readmes(repo: Repo):
     if dots:
         with open(path.join(repo.path, "README.md"),
                   "a") as readme:
+            content = readme.read()
+            if POINTILLISM in content:
+                raise RemodificationException(
+                    f"{POINTILLISM} found in document: README.md")
+
+
+
             for dot in dots:  # TODO only one level
                 url = pointillism_url(repo, dot)
                 readme.write(MD_BODY.format(url=url))

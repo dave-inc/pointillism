@@ -11,5 +11,5 @@ class TestGithubSearchParse:
     def test_parse(self, github_response):
         resp = GHSearchResponse.from_json(github_response)
         assert resp.total == 7
-        for item in resp.items:
-            print(item)
+        # for item in resp.items:
+        #     print(item)
