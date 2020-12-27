@@ -11,9 +11,13 @@ leads:
 	@grep DISCOVERED logs/github_search.log >> github.leads
 	@cat github.leads | sort | uniq > github.leads.sorted
 	@rm github.leads
+	@cp github.leads.sorted github.leads
 	wc -l github.leads.sorted
 
-clean: 
+leadsList:
+	cut -f2 github.leads.sorted | sort | uniq
+
+clean:
 	rm -rf $(TMP_DIR)
 
 run: clean

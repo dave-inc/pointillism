@@ -11,7 +11,8 @@ with pointillism.io links.
 - Will postpend pointillism IMG to README.md
 """
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s:%(levelname)s:%(message)s")
 
 parser = ArgumentParser(description=DESCRIPTION)
 parser.add_argument("files", type=str, nargs="+",

@@ -6,7 +6,7 @@ import logging
 from time import sleep
 from .search import *
 
-log = logging.info
+log = logging.getLogger().info
 
 CLIENT = GitHubFileSearchClient()
 PAGE_MAX = 100
