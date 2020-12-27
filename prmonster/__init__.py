@@ -18,6 +18,10 @@ def repos_reader(filename):
             yield Repo.parse(line)
 
 
+def do_not_update(repo):
+    return 'pointillism.io' in contents(repo, 'README.md')
+
+
 def devour_repos(*repos, dry_run=False):
     """Run PRMonster on `repos` params.
     """
@@ -25,17 +29,24 @@ def devour_repos(*repos, dry_run=False):
         logging.info(filename)
         for repo in repos_reader(filename):
             repo = checkout(repo)  # adding checkout path
-            if 'pointillism.io' in contents(repo, 'README.md'):
+
+            # guard clauses
+            if do_not_update(repo):
                 logging.info(f"SKIPPING: {str(repo)}. found 'pointillism.io'")
                 continue
 
+            # update files
             update_readmes(repo)
+
+            # commit changes
             try:
                 commit(repo, '"Adding pointillism.io"')
             except CalledProcessError:
                 logging.error(
                     f"Commit failure. Does {str(repo)} have DOT files?")
                 continue
+
+            # publish
             try:
                 if not dry_run:
                     pr(repo)

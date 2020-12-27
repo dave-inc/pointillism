@@ -1,10 +1,11 @@
-from os import path
+from os import path, environ
 from base64 import b64decode
 import subprocess
 from prmonster.models import Repo
 from github import Github
 
 CHECKOUT_DIR = "/tmp/pointillism_prs"
+GIT_TOKEN = environ.get("GIT_TOKEN")
 
 GITHUB = Github(login_or_token='d2be3d90f88e0bbf64e79a009cc5f030ff2910fc')
 BRANCH = "pointillism"

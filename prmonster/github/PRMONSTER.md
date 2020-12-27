@@ -30,8 +30,23 @@ should take care of itself.
 
 TODO: Document python3 -m prmonster
 
-# Automated PR
+### Automated PR
 
+Make a `.repos` file to update many repositories using
+automated scripts. A `.repos` file consists of `\n` delimited
+`owner/project` lines.
+
+Run the script:
+
+```.sh
+# make daily leads
+python3 -m prmonster
 ```
-python3 -m prmonster.pr
+
+#### Client Leads
+
+```.sh
+make leads
+cat github.leads.sorted
 ```
+

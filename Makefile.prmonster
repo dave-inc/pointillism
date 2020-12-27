@@ -7,9 +7,11 @@ search:
 	python3 -m prmonster.github
 
 leads:
-	grep DISCOVERED logs/github_search.log >> github.leads
-	cat github.leads | sort | uniq > github.leads.sorted
-	rm github.leads
+	wc -l github.leads.sorted
+	@grep DISCOVERED logs/github_search.log >> github.leads
+	@cat github.leads | sort | uniq > github.leads.sorted
+	@rm github.leads
+	wc -l github.leads.sorted
 
 clean: 
 	rm -rf $(TMP_DIR)
