@@ -35,3 +35,11 @@ point/server/static/*
 ENV.*
 *.env
 test-results
+
+
+# pt
+logs/*
+*.repos
+*.leads
+site/*
+public/index.html
