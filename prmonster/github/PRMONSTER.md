@@ -28,4 +28,10 @@ should take care of itself.
 - PRMonster should be separate repo.
 
 
-TODO: Document python3 -m prmonster.pr
+TODO: Document python3 -m prmonster
+
+# Automated PR
+
+```
+python3 -m prmonster.pr
+```

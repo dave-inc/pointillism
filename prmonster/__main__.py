@@ -1,39 +1,28 @@
 import logging
-from . import *
-from .pr.github import *
-from .readme import update_readmes
-from subprocess import CalledProcessError
-
 from argparse import ArgumentParser
+
+from . import devour_repos
+
+DESCRIPTION = """
+Read list of repo names `owner/project` from 
+a file, and attempt to update their documentation
+with pointillism.io links.
+
+- Will postpend pointillism IMG to README.md
+"""
 
 logging.basicConfig(level=logging.INFO)
 
-parser = ArgumentParser()
+parser = ArgumentParser(description=DESCRIPTION)
 parser.add_argument("files", type=str, nargs="+",
-                    help="files with repos")
+                    help=".repos files with repos"
+                         "on separate lines")
+parser.add_argument("dry_run", type=str, nargs="?",
+                    help="`1` to withold publishing")
 
-class CommitException(Exception): pass
+args = parser.parse_args()
+dry_run = args.dry_run.lower() in ['1', 'true', 'yes']
+if not dry_run:
+    logging.warn("Publishing Repo changes.")
 
-if __name__ == "__main__":
-    args = parser.parse_args()
-
-    for filename in args.files:
-        logging.info(filename)
-        for repo in repos_reader(filename):
-            repo = checkout(repo)  # adding checkout path
-            if 'pointillism.io' in contents(repo, 'README.md'):
-                logging.info(f"SKIPPING: {str(repo)}. found 'pointillism.io'")
-                continue
-
-            update_readmes(repo)
-            try:
-                commit(repo, '"Adding pointillism.io"')
-            except CalledProcessError:
-                logging.error(
-                    f"Commit failure. Does {str(repo)} have DOT files?")
-                continue
-            try:
-                pr(repo)
-            except CalledProcessError:
-                logging.error(
-                    f"PR failure for: {str(repo)}")
+devour_repos(*args.files, args.dry_run)

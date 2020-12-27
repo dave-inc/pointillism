@@ -1,7 +1,7 @@
 from os import path
 from base64 import b64decode
 import subprocess
-from prmonster import Repo
+from prmonster.models import Repo
 from github import Github
 
 CHECKOUT_DIR = "/tmp/pointillism_prs"
