@@ -1,3 +1,4 @@
+import logging
 from os import path, environ
 from base64 import b64decode
 import subprocess
@@ -20,29 +21,36 @@ def checkout_path(repo: Repo):
 
 def contents(repo: Repo, filepath: str='README.md'):
     """get contents of a repo file"""
-    ghrepo = GITHUB.get_repo(repo.repo)
-    return b64decode(ghrepo.get_contents(filepath).content).decode('utf-8')
+    try:
+        ghrepo = GITHUB.get_repo(repo.repo)
+        return b64decode(ghrepo.get_contents(filepath).content).decode('utf-8')
+    except: # github.GithubException.BadCredentialsException
+        logging.info(f"could not load: {filepath}")
 
 def checkout(repo: Repo):
+    repo.path = checkout_path(repo)
     subprocess.run(["mkdir", "-p", checkout_path(repo)],
                    check=True)
-    subprocess.run(
-        ['git',
-         'clone',
-         github_url(repo),
-         checkout_path(repo)
-         ],
-        check=True
-    )
-    subprocess.run([
-        'git',
-        '-C',
-        checkout_path(repo),
-        'checkout',
-        '-b', BRANCH
-    ], check=True)
-
-    repo.path = checkout_path(repo)
+    try:
+        subprocess.run(
+            ['git',
+             'clone',
+             github_url(repo),
+             checkout_path(repo)
+             ],
+            check=True
+        )
+        subprocess.run([
+            'git',
+            '-C',
+            checkout_path(repo),
+            'checkout',
+            '-b', BRANCH
+        ], check=True)
+    except subprocess.CalledProcessError as ex:
+        if not path.isdir(checkout_path(repo)):
+            raise ex
+        logging.error(f"ERROR SKIPPING: {str(repo)}.")
     return repo
 
 def commit(repo: Repo, message: str):

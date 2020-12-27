@@ -14,7 +14,7 @@ SUPPORTED_DOCS = ('md',) # , 'rst')
 TAB = "\t"
 
 
-def find_dot_repos(user):
+def find_dot_repos(user=None):
     target_repos = []
     page = 0
     while page < PAGE_MAX:

@@ -19,11 +19,13 @@ parser.add_argument("files", type=str, nargs="+",
                     help=".repos files with repos"
                          "on separate lines")
 parser.add_argument("dry_run", type=str, nargs="?",
-                    help="`1` to withold publishing")
+                    help="`1` to withold publishing",
+                    default='1')
 
 args = parser.parse_args()
 dry_run = args.dry_run.lower() in ['1', 'true', 'yes']
 if not dry_run:
     logging.warn("Publishing Repo changes.")
 
-devour_repos(*args.files, args.dry_run)
+# process repos
+devour_repos(*args.files, dry_run=args.dry_run)

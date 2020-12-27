@@ -2,6 +2,16 @@
 
 Run this frequently.
 
+## JUST RUN THIS
+
+This will check recent github content for new dot files,
+and then attemp to make PRs.
+
+```.sh
+make search leads run FILE=leads.repo
+
+```
+
 ## new leads
 
 By not assigning a `TARGET_USER`, it will search for most recently indexed files.

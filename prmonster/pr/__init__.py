@@ -4,4 +4,4 @@ Adding picture rendering to your documentation.
 Learn more at https://pointillism.io
 """
 
-import github
+from .github import *
