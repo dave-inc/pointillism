@@ -54,6 +54,14 @@ def checkout(repo: Repo):
     return repo
 
 def commit(repo: Repo, message: str):
+    if path.exists(checkout_path(repo) + "/README.md"):
+        subprocess.run([
+            'git',
+            '-C',
+            checkout_path(repo),
+            'add',
+            'README.md'
+        ], check=True)
     subprocess.run([
         'git',
         '-C',

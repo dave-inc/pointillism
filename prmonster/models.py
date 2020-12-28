@@ -16,6 +16,9 @@ class Repo:
     def repo(self):
         return "/".join((self.owner, self.project))
 
+    def mkpath(self, filename):
+        return path.join(self.path, filename)
+
     def __str__(self):
         return f"Repo<{self.owner}/{self.project}>"
 

@@ -25,6 +25,11 @@ def pointillism_url(repo: Repo, filename, branch='master'):
     return f"https://pointillism.io/{repo.owner}/{repo.project}/{branch}/{filename}"
 
 
+def write_readme(repo:Repo, docfile='README.md', body=MD_BODY):
+    with open(repo.mkpath('README.md'), 'w') as fp:
+        fp.write(body)
+
+
 def postpend(repo: Repo, docfile='README.md', body=MD_BODY):
     """add `body` to the bottom of `docfile`"""
     if repo.path is None:

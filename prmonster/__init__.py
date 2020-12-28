@@ -1,9 +1,10 @@
 import logging
 from subprocess import CalledProcessError
+from os.path import exists
 
 from .models import Repo, get_dotfiles, find_docs
 from .pr.github import *
-from .readme import postpend, RemodificationException
+from .readme import postpend, write_readme, RemodificationException
 from .replaceinplace import replace_dotrefs
 
 POINTILLISM = 'pointillism'
@@ -69,9 +70,15 @@ def devour_repos(*repos, dry_run=False):
                             is_updated = True
 
                 # don't postpend if updated any file
-                if not is_updated and postpend(repo):
-                    logging.info(f"postpend update: {doc}")
-                    is_updated = True
+                if not is_updated:
+                    if exists(repo.mkpath('README.md')):
+                        if postpend(repo):
+                            logging.info(f"postpend update: README.md")
+                            is_updated = True
+                    else:
+                        logging.info(f"creating README.md")
+                        write_readme(repo)
+                        is_updated = True
 
                 if is_updated:
                     # commit changes
