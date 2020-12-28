@@ -1,19 +1,22 @@
 import logging
 from subprocess import CalledProcessError
 
-from .models import Repo
+from .models import Repo, get_dotfiles, find_docs
 from .pr.github import *
-from .readme import update_readmes, find_docs
+from .readme import postpend, RemodificationException
+from .replaceinplace import replace_dotrefs
+
+POINTILLISM = 'pointillism'
 
 
-def repos_reader(filename):
+def repos_reader(reposfile):
     """
     Iterates through lines of a .repos file.
     Expects git project format:
 
     `{owner}/{project}\n`
     """
-    with open(filename, "r") as repos:
+    with open(reposfile, "r") as repos:
         for line in repos:
             yield Repo.parse(line)
 
@@ -26,41 +29,61 @@ def do_not_update(repo):
 
 
 def devour_repos(*repos, dry_run=False):
-    """Run PRMonster on `repos` params.
-    """
+    """Run PRMonster on `repos` params."""
     logging.debug("devouring...")
     logging.debug(repos)
-    for filename in repos:
-        logging.info(filename)
-        for repo in repos_reader(filename):
+    for reposfile in repos:
+        logging.info(reposfile)
+        for repo in repos_reader(reposfile):
             repo = checkout(repo)  # adding checkout path
+            is_updated = False
 
-                # guard clauses
+            # guard clauses
             if do_not_update(repo):
                 logging.warn(f"SKIPPING: {str(repo)}. found 'pointillism.io'")
                 continue
 
             try:
                 # update files
+                dots = get_dotfiles(repo)
                 docs = find_docs(repo)
                 if docs is None:
                     # TODO repo checkout issue?
+                    logging.error(f"No documentation found in {str(repo)}")
                     continue
                 logging.info(f"Found {len(docs)} docs.")
 
-                if not docs:
-                    logging.error(f"No documentation found in {str(repo)}")
-                    continue
+                for doc in docs:
+                    with open(doc, 'r') as doc_content:
+                        content_start = doc_content.read()
+                    if POINTILLISM in content_start:
+                        logging.info(f"SKIPPING DOC: {doc}. pointillism found.")
+                        continue
 
-                update_readmes(repo)
+                    for dot in dots:
+                        content = replace_dotrefs(repo, content_start, dot)
+                        with open(doc, 'w') as doc_fp:
+                            doc_fp.write(content)
+                        if POINTILLISM in content:
+                            logging.info(f"inline replace: {doc}")
+                            is_updated = True
 
-                # commit changes
-                commit(repo, '"Adding pointillism.io"')
+                # don't postpend if updated any file
+                if not is_updated and postpend(repo):
+                    logging.info(f"postpend update: {doc}")
+                    is_updated = True
 
-                if not dry_run:
-                    pr(repo)
-                else
-                    logging.info("DRY RUN: Skipping Publish")
+                if is_updated:
+                    # commit changes
+                    commit(repo, '"Adding pointillism.io"')
+
+                    if not dry_run:
+                        pr(repo)
+                    else:
+                        logging.info("DRY RUN: Skipping Publish")
             except CalledProcessError as ex:
                 logging.exception(ex)
+                continue
+            except RemodificationException as ex:
+                logging.info(f"Skipping: {ex}")
                 continue

@@ -2,6 +2,7 @@ import logging
 from os import path
 from glob import glob
 from prmonster import Repo
+from prmonster.models import get_dotfiles
 
 POINTILLISM = 'pointillism'  # if found, presume processed
 
@@ -24,33 +25,23 @@ def pointillism_url(repo: Repo, filename, branch='master'):
     return f"https://pointillism.io/{repo.owner}/{repo.project}/{branch}/{filename}"
 
 
-def update_readmes(repo: Repo):
+def postpend(repo: Repo, docfile='README.md', body=MD_BODY):
+    """add `body` to the bottom of `docfile`"""
     if repo.path is None:
         raise Exception("Path not set on repo")
 
-    # TODO only checking root level
-    dots = glob(path.join(repo.path, "*.dot")) + \
-           glob(path.join(repo.path, "*.gv")) + \
-           glob(path.join(repo.path, "**/*.dot"), recursive=True) + \
-           glob(path.join(repo.path, "**/*.gv"), recursive=True)
+    dots = get_dotfiles(repo)
     logging.info(f"Found {len(dots)} dots.")
-    for dot_file in dots:
-        dot_path = path.join(repo.path, dot_file)
-        logging.info(f"opening {dot_path}")
-        with open(dot_path, "r") as readme:
-            content = readme.read()
-            if POINTILLISM in content:
-                raise RemodificationException(
-                    f"{POINTILLISM} found in document: README.md")
+    with open(path.join(repo.path, docfile), "r") as readme:
+        content = readme.read()
+        if POINTILLISM in content:
+            raise RemodificationException(
+                f"{POINTILLISM} found in document: {docfile}")
 
-        with open(dot_path, "a") as readme:
-            for dot in dots:
-                url = pointillism_url(repo, dot)
-                readme.write(MD_BODY.format(url=url))
-            readme.write(MD_FOOTER)
+    with open(path.join(repo.path, docfile), "a") as readme:
+        for dot in dots:
+            url = pointillism_url(repo, dot)
+            readme.write(body.format(url=url))
+        readme.write(MD_FOOTER)
 
-def find_docs(repo: Repo):
-    if repo.path is None:
-        return None
-    return glob(path.join(repo.path, "*.md"), recursive=True) +\
-           glob(path.join(repo.path, "*.rst"), recursive=True)
+    return True

@@ -1,3 +1,7 @@
+from os import path
+from glob import glob
+
+
 class Repo:
     def __init__(self, owner, project, path=None):
         self.owner = owner
@@ -15,3 +19,16 @@ class Repo:
     def __str__(self):
         return f"Repo<{self.owner}/{self.project}>"
 
+
+def get_dotfiles(repo: Repo):
+    return glob(path.join(repo.path, "*.dot")) + \
+           glob(path.join(repo.path, "*.gv")) + \
+           glob(path.join(repo.path, "**/*.dot"), recursive=True) + \
+           glob(path.join(repo.path, "**/*.gv"), recursive=True)
+
+
+def find_docs(repo: Repo):
+    if repo.path is None:
+        return None
+    return glob(path.join(repo.path, "*.md"), recursive=True) + \
+           glob(path.join(repo.path, "*.rst"), recursive=True)

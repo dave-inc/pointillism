@@ -1,0 +1,9 @@
+digraph First {
+    A -> B
+    B -> C
+}
+
+digraph Second {
+    B -> D
+    D -> E
+}
