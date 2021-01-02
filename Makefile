@@ -77,7 +77,7 @@ imageTest:
 	@docker stop pointillism && docker rm pointillism || echo "pointillism not running."
 	@docker run --name $(PROJECT) --env-file test.env -d -p 5001:5001 --restart=always $(IMAGE):latest
 
-deploy:
+deploy: package
 	@echo "deploying $(ACCOUNT)/$(PROJECT)"
 	@cat <(curl -s -u "$(DEPLOY_USER)" https://ipsumllc.com/factors/3/pointillism) \
  		<(echo "export SERVICE_PORT=$(SERVICE_PORT)") \
