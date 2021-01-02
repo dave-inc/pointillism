@@ -1,4 +1,3 @@
-from os import path
 import re
 from prmonster import Repo
 

@@ -1,8 +1,7 @@
 TMP_DIR?=/tmp/pointillism_prs
 FILE?=test/fixtures/tg.repos
 
-daily: search
-
+daily: search leads
 search:
 	python3 -m prmonster.github
 

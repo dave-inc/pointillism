@@ -24,10 +24,12 @@ class Repo:
 
 
 def get_dotfiles(repo: Repo):
-    return glob(path.join(repo.path, "*.dot")) + \
+    path_len = len(repo.path) + 1  # plus slash
+    return [fqn[path_len:] for fqn in glob(path.join(repo.path, "*.dot")) + \
            glob(path.join(repo.path, "*.gv")) + \
            glob(path.join(repo.path, "**/*.dot"), recursive=True) + \
-           glob(path.join(repo.path, "**/*.gv"), recursive=True)
+           glob(path.join(repo.path, "**/*.gv"), recursive=True)]
+
 
 
 def find_docs(repo: Repo):

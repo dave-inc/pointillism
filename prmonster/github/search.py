@@ -27,7 +27,7 @@ URL = '/search/code?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()]
 URL2 = '/search?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()])
 
 USER_DOT_FILE_SEARCH = "user%3Agithub+user%3Aatom+user%3Aelectron+user%3Aoctokit+user%3Atwitter+extension%3Adot+extension%3Agv&type=code"
-DOT_FILE_SEARCH = "extension%3Adot+extension%3Agv&type=code"
+DOT_FILE_SEARCH = "l=&o=desc&q=extension%3Adot+extension%3Agv&s=indexed&type=Code"
 # OR *.svg files
 
 
