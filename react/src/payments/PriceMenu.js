@@ -33,7 +33,7 @@ function PriceMenu() {
                                 <li>Access to Private Repos.</li>
                             </ul>
                             <div class="price-call">
-                                <h2 class="price">$8.99/mo.</h2>
+                                <h2 class="price">$12.99/mo.</h2>
                                 <a href="mailto:trevor@ipsumllc.com">Contact Us</a>
                             </div>
                         </Grid>
