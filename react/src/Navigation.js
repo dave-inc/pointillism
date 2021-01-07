@@ -14,6 +14,7 @@ import Repos from './Repos';
 import About from './About';
 import DOTDetail from './DOTDetail';
 import PayPalConfirm from './payments/PayPalConfirm';
+import PriceMenu from './payments/PriceMenu';
 
 import {
   BrowserRouter as Router,
@@ -77,13 +78,15 @@ export default function TabNav({host, domain, repos, username}) {
       <Route path="/repos"><Repos repos={repos} /></Route>,
     ];
   } else {
-    tabs.push(<Tab label="login" href="/github/login"/>)
+    // tabs.push(<Tab label="Pricing" href="/pricing"/>)
+    tabs.push(<Tab label="Login" href="/github/login"/>)
   }
 
   routes = [...routes, ...[
     <Route path="/detail"><DOTDetail /></Route>,
     <Route path="/paypal/confirm" component={PayPalConfirm} />,
     <Route path="/getting-started"><GettingStarted host={host} domain={domain}/></Route>,
+    <Route path="/pricing"><PriceMenu /></Route>,
     <Route path="/about"><About/></Route>,
     <Route path="/"><Manifesto host={host} domain={domain}/></Route>,
   ]];

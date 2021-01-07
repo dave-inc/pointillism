@@ -19,7 +19,8 @@ IS_DEV = (ENV == "develop")
 
 LANDING_ROUTES = [
     "/profile", "/account", "/repos", "/getting-started",
-    "/about", "/contact", "/paypal/confirm", "/detail"
+    "/about", "/contact", "/paypal/confirm", "/detail",
+    "/pricing"
 ]
 
 app = Flask(__name__)
