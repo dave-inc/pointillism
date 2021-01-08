@@ -39,6 +39,11 @@ export AIRBRAKE_API_KEY
 export LOG
 export PLANT_JAR
 
+export GIT_COMMITTER_NAME=pointillism.io
+export GIT_COMMITTER_EMAIL=trevor@trevorgrayson.com
+export GIT_AUTHOR_NAME="trevor grayson"
+export GIT_AUTHOR_EMAIL=trevor@trevorgrayson.com
+
 .EXPORT_ALL_VARIABLES:
 server: compile
 	@test -n "$(HOST)" # set $$HOST variable
