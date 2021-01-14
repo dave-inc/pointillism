@@ -89,7 +89,7 @@ def render_github_url(org, project, branch, path):
         body = GitContent(creds).get(org, project, branch, path)
         resp = render(body, **render_params)
         resp.headers = cache_control(is_public(creds), resp.headers)
-        GAnalytics().pageview(resource.analytics_path, user_id)
+        GAnalytics().pageview(resource.analytics_path, user_id) # TODO statsd this
         return resp
     except GithubException as err:
         log.error(err)
