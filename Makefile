@@ -65,12 +65,12 @@ package: compile
 
 image: package 
 	docker build -t $(IMAGE) .
-	docker tag $(IMAGE):latest $(IMAGE):$(NEW_VERSION)
+	docker tag $(IMAGE):latest $(IMAGE):$(VERSION)
 
 imagePush: image # versionBump
 	echo "$(DOCKER_PASS)" | docker login -u "$(DOCKER_USER)" --password-stdin
 	docker push $(IMAGE)
-	docker push $(IMAGE):$(NEW_VERSION)
+	docker push $(IMAGE):$(VERSION)
 	docker push $(IMAGE):latest
 
 imageTest:
@@ -81,14 +81,14 @@ deploy: package
 	@echo "deploying $(ACCOUNT)/$(PROJECT)"
 	@cat <(curl -s -u "$(DEPLOY_USER)" https://ipsumllc.com/factors/3/pointillism) \
  		<(echo "export SERVICE_PORT=$(SERVICE_PORT)") \
- 		<(echo "export DOCKER_TAG=$(NEW_VERSION)") bin/deploy.remote.sh | ssh $(DEPLOY_HOST)
+ 		<(echo "export DOCKER_TAG=$(VERSION)") bin/deploy.remote.sh | ssh $(DEPLOY_HOST)
 	# TEST_HOST=https://pointillism.io GIT_TOKEN=123 make smoke
 
 versionBump:
 	@git pull --tags
-	@git tag $(VERSION_NEW)
+	@git tag $(VERSION)
 	@git push --tags
-	@echo "tagged $(VERSION_NEW)"
+	@echo "tagged $(VERSION)"
 
 test: compileAll
 	$(PYTHON) -m pytest -s --cov=point --junitxml="test-results/result.xml" $(TEST)
