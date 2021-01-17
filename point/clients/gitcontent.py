@@ -24,6 +24,19 @@ class GitContent:
         self.github = Github(login_or_token=creds, client_id=GITHUB_CLIENT_ID,
                              client_secret=GITHUB_SECRET)
 
+    def get_by_branch_path(self, owner, repo, branch_path):
+        branch, *rest = branch_path.split('/')
+        branches = repo.get_branches()
+        path = ''
+        for d in rest:
+            if branch not in branches:
+                branch += "/" + d
+            else:
+                path += '/' + d
+
+        repo = self.github.get_repo(f'{owner}/{repo}', lazy=False)
+        return b64decode(repo.get_contents(path, ref=branch).content).decode('utf-8')
+
     def get(self, owner, repo, branch, path):
         repo = self.github.get_repo(f'{owner}/{repo}', lazy=False)
         return b64decode(repo.get_contents(path, ref=branch).content).decode('utf-8')
