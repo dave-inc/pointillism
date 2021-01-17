@@ -6,7 +6,7 @@ from base64 import b64encode, b64decode
 from .models import *
 
 USER = "trevorgrayson"
-TOKEN = environ['GIT_TOKEN']
+TOKEN = environ.get('GIT_TOKEN')
 
 userAndPass = b64encode(f"{USER}:{TOKEN}".encode("utf8")).decode("ascii")
 HEADERS = {

@@ -1,5 +1,8 @@
+from os import environ
 from pytest import fixture
 from prmonster.github import GHSearchResponse, GHSearchItem
+
+environ['GIT_TOKEN'] = '12345'
 
 
 class TestGithubSearchParse:
