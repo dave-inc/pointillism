@@ -17,7 +17,7 @@ leads:
 leadsList:
 	cut -f2 github.leads.sorted | sort | uniq
 
-clean:
+cleanPR:
 	rm -rf $(TMP_DIR)
 
 run: clean
