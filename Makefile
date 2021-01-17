@@ -40,7 +40,7 @@ export LOG
 export PLANT_JAR
 
 .EXPORT_ALL_VARIABLES:
-server: compile
+serve: compile
 	@test -n "$(HOST)" # set $$HOST variable
 	$(PYTHON) -m point.server
 
