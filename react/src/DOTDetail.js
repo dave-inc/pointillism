@@ -53,9 +53,13 @@ function DOTDetail() {
           <br/>
         </p>
       </div>
+      <meta property="og:image" content={`${hostname}${path}.png`} />
 
     </Typography>
   )
+  // <meta property="og:url"          content="http://www.nytimes.com/2015/02/19/arts/international/when-great-minds-dont-think-alike.html" />
+  // <meta property="og:title"        content="When Great Minds Don’t Think Alike" />
+  // <meta property="og:description"  content="How much does culture influence creative thinking?" />
   // <PayPalExpressButton/> 
 }
 
