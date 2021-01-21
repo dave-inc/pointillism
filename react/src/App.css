@@ -147,3 +147,7 @@ fieldset {
   color: #555;
   font-size: 0.9em;
 }
+
+#showcase {
+  width: 800px;
+}

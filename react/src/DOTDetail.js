@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 // import PayPalExpressButton from './payments/PayPalExpressButton'
+
 function pathToResource(path) {
   const split = path.split("/");
   if (split.length < 3) {
@@ -22,13 +23,23 @@ function DOTDetail() {
   const path = window.location.href.split("#")[1];
   const resource = pathToResource(path);
   const render = `${hostname}${path}`;
-    
+  // const imgTag =
+  
+  useEffect(() => {
+    const showcase = document.getElementById("showcase");
+    fetch(path).then(response => {
+      response.text().then(function (text) {
+        showcase.innerHTML = text;
+      })
+    })
+  });
+
   return (
     <Typography align="center" paragraph={true}>
       <h2>{resource.filename}</h2>
       <p>{resource.repo}</p>
-      <div>
-      <img src={path + ".svg"} alt={path} />
+      <div id="showcase">
+        <img src={path + ".svg"} alt={path} />
       </div>
       <p>formats:&nbsp;
         <a href={path + ".svg"}>svg</a>&nbsp;
