@@ -3,6 +3,7 @@
 # https://docs.github.com/en/free-pro-team@latest/rest/reference/search
 #
 import logging
+from datetime import datetime
 from time import sleep
 from .search import *
 
@@ -16,6 +17,7 @@ TAB = "\t"
 
 
 def find_dot_repos(user=None):
+    repo_count = 0
     target_repos = []
     page = 0
     while page < PAGE_MAX:
@@ -29,8 +31,8 @@ def find_dot_repos(user=None):
 
         dot_names = [item.filename() for item in resp.items]
 
-
         for repo in resp.repos():
+            repo_count += 1
             owner, project = repo.split('/')
             fp = open(f'logs/{owner}-{project}', 'w')
             record = lambda msg: fp.write(f"{msg}\n")
@@ -86,3 +88,9 @@ def find_dot_repos(user=None):
 
         page += 1
         sleep(1)
+
+    with open('logs/repo.counts', 'a') as fp:
+        fp.write(datetime.strftime(datetime.now(), "%Y-%m-%d"))
+        fp.write("\t")
+        fp.write(str(repo_count))
+        fp.write("\n")
