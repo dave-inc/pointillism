@@ -20,6 +20,9 @@ leadsList:
 cleanPR:
 	rm -rf $(TMP_DIR)
 
+leadsGraph:
+	python3 prmonster/graph.py
+
 run: clean
 	python3 -m prmonster $(FILE)
 
