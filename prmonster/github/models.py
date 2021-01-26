@@ -6,10 +6,15 @@ class GHRepo:
     def __init__(self, owner, project):
         self.owner = owner
         self.project = project
+        self.dots = None
+        self.refs = None
 
     def __str__(self):
         return f"Repo\t{self.owner}/{self.project}"
 
+    def report(self):
+        """Summary for repo PR consideration"""
+        return f"{self.owner}/{self.project}\tdots:{self.dots}\tref:{self.refs}"
 
 class GHSearchItem:
     def __init__(self, item):
@@ -26,14 +31,14 @@ class GHSearchItem:
     def filename(self, ext=False):
         try:
             return self.path.split("/")[-1].split(".")[0]
-        except Exception as ex:
+        except ex:
             logging.error("Couldn't lazy parse: " + self.path)
             return None
 
     def filetype(self):
         try:
             return self.path.split(".")[-1]
-        except Exception as ex:
+        except ex:
             logging.error("Couldn't lazy format: " + self.path)
             return None
 

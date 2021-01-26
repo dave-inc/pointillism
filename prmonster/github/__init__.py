@@ -9,6 +9,7 @@ from .search import *
 log = logging.getLogger().info
 
 CLIENT = GitHubFileSearchClient()
+CONTENT = GitHubContent()
 PAGE_MAX = 100
 SUPPORTED_DOCS = ('md',) # , 'rst')
 TAB = "\t"
@@ -28,20 +29,26 @@ def find_dot_repos(user=None):
 
         dot_names = [item.filename() for item in resp.items]
 
+
         for repo in resp.repos():
-            log("=========================")
-            log(repo)
+            owner, project = repo.split('/')
+            fp = open(f'logs/{owner}-{project}', 'w')
+            record = lambda msg: fp.write(f"{msg}\n")
+
+            record("=========================")
             dots = list(filter(lambda i: repo == i.repo, resp.items))
-
-            log("========= dots ==========")
-            for dot in dots:
-                log(dot)
-
-            log("== dot file references ==")
             target_docs = []
             unsupported = []
             dot_refs = CLIENT.search("*.png", repo=repo)
+            author = ":".join(list(CONTENT.last_author(repo).values()))
             # + CLIENT.search("*.svg", repo=repo)
+
+            log(f"PROCESSING REPO: {repo} dots: {len(dots)} refs: {len(dot_refs.items)} {author}")
+            record(f"PROCESSING REPO: {repo} dots: {len(dots)} refs: {len(dot_refs.items)} {author}")
+            record("========= dots ==========")
+            for dot in dots:
+                record(str(dot))
+            record("== dot file references ==")
 
             if not dot_refs:
                 target_repos.append([repo, None
@@ -55,7 +62,8 @@ def find_dot_repos(user=None):
                 else:
                     unsupported.append(ref)
             for ref in target_docs + unsupported:
-                log(ref)
+                record(str(ref))
+            fp.close()
 
         log("======= discovered ======")
         for target in target_repos:

@@ -41,7 +41,7 @@ def devour_repos(*repos, dry_run=False):
 
             # guard clauses
             if do_not_update(repo):
-                logging.warn(f"SKIPPING: {str(repo)}. found 'pointillism.io'")
+                logging.warning(f"SKIPPING: {str(repo)}. found 'pointillism.io'")
                 continue
 
             try:
