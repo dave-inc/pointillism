@@ -3,6 +3,7 @@ FILE?=test/fixtures/tg.repos
 
 daily: search leads
 search:
+	mkdir -p logs/repos
 	python3 -m prmonster.github
 
 leads:

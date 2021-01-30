@@ -7,6 +7,7 @@ from datetime import datetime
 from time import sleep
 from .search import *
 
+REPO_DOC_PATH = 'logs/repos'
 log = logging.getLogger().info
 
 CLIENT = GitHubFileSearchClient()
@@ -34,7 +35,7 @@ def find_dot_repos(user=None):
         for repo in resp.repos():
             repo_count += 1
             owner, project = repo.split('/')
-            fp = open(f'logs/{owner}-{project}', 'w')
+            fp = open(f'{REPO_DOC_PATH}/{owner}-{project}', 'w')
             record = lambda msg: fp.write(f"{msg}\n")
 
             record("=========================")
@@ -89,7 +90,7 @@ def find_dot_repos(user=None):
         page += 1
         sleep(1)
 
-    with open('logs/repo.counts', 'a') as fp:
+    with open('{REPO_DOC_PATH}/repo.counts', 'a') as fp:
         fp.write(datetime.strftime(datetime.now(), "%Y-%m-%d"))
         fp.write("\t")
         fp.write(str(repo_count))
