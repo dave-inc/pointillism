@@ -1,5 +1,6 @@
 from os import environ, path, getcwd, urandom
 import logging
+from pathlib import Path
 
 from .auth import *
 from .telemetry import *
@@ -36,3 +37,5 @@ if not WILL_BRAND:
     logging.info(f"WILL_BRAND {WILL_BRAND}")
 
 GA_TRACKING_ID = 'UA-165967713-1'
+
+PROJECT_ROOT = str(Path(__file__).parent.parent)

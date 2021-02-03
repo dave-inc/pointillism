@@ -3,11 +3,12 @@
 # https://docs.github.com/en/free-pro-team@latest/rest/reference/search
 #
 import logging
+from config import PROJECT_ROOT
 from datetime import datetime
 from time import sleep
 from .search import *
 
-REPO_DOC_PATH = 'logs/repos'
+REPO_DOC_PATH = PROJECT_ROOT + '/logs/repos'
 log = logging.getLogger().info
 
 CLIENT = GitHubFileSearchClient()
@@ -90,7 +91,7 @@ def find_dot_repos(user=None):
         page += 1
         sleep(1)
 
-    with open('{REPO_DOC_PATH}/repo.counts', 'a') as fp:
+    with open('{REPO_DOC_PATH}/repo.counts', 'a+') as fp:
         fp.write(datetime.strftime(datetime.now(), "%Y-%m-%d"))
         fp.write("\t")
         fp.write(str(repo_count))
