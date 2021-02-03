@@ -11,6 +11,7 @@ from .search import *
 REPO_DOC_PATH = PROJECT_ROOT + '/logs/repos'
 log = logging.getLogger().info
 
+NOW = datetime.strftime(datetime.now(), "%Y-%m-%d")
 CLIENT = GitHubFileSearchClient()
 CONTENT = GitHubContent()
 PAGE_MAX = 100
@@ -22,6 +23,13 @@ def find_dot_repos(user=None):
     repo_count = 0
     target_repos = []
     page = 0
+    report = open(f"dailyreport-{NOW}.md", 'w')
+    report.write(datetime.strftime(datetime.now(),
+                                   "# Report: %Y-%m-%d\n\n"))
+    report.write("## repos:\n\n")
+    report.write("| repo | dots | refs | author | link |\n")
+    report.write("| ---- | ---- | ---- | ------ | ---- |\n")
+
     while page < PAGE_MAX:
         args = {}
         if user is not None:
@@ -36,6 +44,7 @@ def find_dot_repos(user=None):
         for repo in resp.repos():
             repo_count += 1
             owner, project = repo.split('/')
+            log(f"Writing to {REPO_DOC_PATH}")
             fp = open(f'{REPO_DOC_PATH}/{owner}-{project}', 'w')
             record = lambda msg: fp.write(f"{msg}\n")
 
@@ -47,6 +56,7 @@ def find_dot_repos(user=None):
             author = ":".join(list(CONTENT.last_author(repo).values()))
             # + CLIENT.search("*.svg", repo=repo)
 
+            report.write(f"| {repo} | {len(dots)} | {len(dot_refs.items)} | {author}| [link](https://github.com/{repo}) |\n")
             log(f"PROCESSING REPO: {repo} dots: {len(dots)} refs: {len(dot_refs.items)} {author}")
             record(f"PROCESSING REPO: {repo} dots: {len(dots)} refs: {len(dot_refs.items)} {author}")
             record("========= dots ==========")
@@ -91,8 +101,12 @@ def find_dot_repos(user=None):
         page += 1
         sleep(1)
 
-    with open('{REPO_DOC_PATH}/repo.counts', 'a+') as fp:
+    with open(f'{REPO_DOC_PATH}/repo.counts', 'a+') as fp:
         fp.write(datetime.strftime(datetime.now(), "%Y-%m-%d"))
         fp.write("\t")
         fp.write(str(repo_count))
         fp.write("\n")
+
+    report.write("\n")
+    report.write("Repo Count: %d\n", repo_count)
+    report.close()
