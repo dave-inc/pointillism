@@ -8,10 +8,12 @@ from datetime import datetime
 from time import sleep
 from .search import *
 
-REPO_DOC_PATH = PROJECT_ROOT + '/logs/repos'
 log = logging.getLogger().info
 
 NOW = datetime.strftime(datetime.now(), "%Y-%m-%d")
+REPO_DOC_PATH = PROJECT_ROOT + '/logs/repos'
+REPORT_PATH = f"{REPO_DOC_PATH}/reports/dailyreport-{NOW}.md"
+
 CLIENT = GitHubFileSearchClient()
 CONTENT = GitHubContent()
 PAGE_MAX = 100
@@ -23,10 +25,10 @@ def find_dot_repos(user=None):
     repo_count = 0
     target_repos = []
     page = 0
-    report = open(f"dailyreport-{NOW}.md", 'w')
+    report = open(REPORT_PATH, 'w')
     report.write(datetime.strftime(datetime.now(),
                                    "# Report: %Y-%m-%d\n\n"))
-    report.write("## repos:\n\n")
+    report.write("## Repos\n\n")
     report.write("| repo | dots | refs | author | link |\n")
     report.write("| ---- | ---- | ---- | ------ | ---- |\n")
 
@@ -101,12 +103,11 @@ def find_dot_repos(user=None):
         page += 1
         sleep(1)
 
+    report.write("\nRepo Count: %d\n", repo_count)
+    report.close()
+
     with open(f'{REPO_DOC_PATH}/repo.counts', 'a+') as fp:
         fp.write(datetime.strftime(datetime.now(), "%Y-%m-%d"))
         fp.write("\t")
         fp.write(str(repo_count))
         fp.write("\n")
-
-    report.write("\n")
-    report.write("Repo Count: %d\n", repo_count)
-    report.close()

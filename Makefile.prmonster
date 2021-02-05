@@ -1,9 +1,10 @@
 TMP_DIR?=/tmp/pointillism_prs
 FILE?=test/fixtures/tg.repos
+REPORTS?=logs/repos/reports
 
 daily: search leads
 search:
-	mkdir -p logs/repos
+	mkdir -p $(REPORTS)
 	python3 -m prmonster.github
 
 leads:
@@ -26,5 +27,14 @@ leadsGraph:
 
 run: clean
 	python3 -m prmonster $(FILE)
+
+reports:
+	mkdir reports
+	cd reports; hexo init
+
+reportsInstall: reports
+	cp $(REPORTS)/* reports/source/_posts
+	cd reports; hexo generate
+	cp reports/public /var/www/html/reports
 
 
