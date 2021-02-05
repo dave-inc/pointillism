@@ -1,5 +1,6 @@
-include Makefile.admin
-include Makefile.prmonster
+include Makefiles/Makefile.admin
+include Makefiles/Makefile.prmonster
+-include Makefiles/Makefile.private
 
 SHELL := /bin/bash
 VERSION_NEW := $(shell ./bin/version_next)

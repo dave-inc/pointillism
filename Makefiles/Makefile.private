@@ -1,0 +1,5 @@
+analytics:
+	@open "https://analytics.google.com/analytics/web/#/report/content-overview/a165967713w231884645p217895445/"
+
+todo:
+	@./bin/trello
