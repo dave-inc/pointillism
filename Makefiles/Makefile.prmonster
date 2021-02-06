@@ -33,8 +33,8 @@ reports:
 	cd reports; hexo init
 
 reportsInstall: reports
-	cp $(REPORTS)/* reports/source/_posts
+	cp -rf $(REPORTS)/* reports/source/_posts
 	cd reports; hexo generate
-	cp reports/public /var/www/html/reports
+	cp -rf reports/public/* /var/www/html/reports
 
 
