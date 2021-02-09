@@ -32,6 +32,14 @@ DOT_FILE_SEARCH = "l=&o=desc&q=extension%3Adot+extension%3Agv&s=indexed&type=Cod
 # OR *.svg files
 
 
+class EnhanceCalm(Exception):
+    pass
+
+
+class ClientException(Exception):
+    pass
+
+
 class GitHubContent:
     """
     Get contents of a github url.
@@ -82,5 +90,7 @@ class GitHubFileSearchClient:
         logging.info(f"Rate Limit: {remaining}/{limit}. Resume: {resume}")
         if resp.status == 200:
             return GHSearchResponse.from_json(resp.read())
+        elif resp.status == 403:
+            raise EnhanceCalm(resp.read())
         else:
-            raise Exception(f"{resp.status}: {resp.read()}")
+            raise ClientException(f"{resp.status}: {resp.read()}")

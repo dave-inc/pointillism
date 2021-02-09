@@ -50,7 +50,8 @@ class GHSearchResponse:
     def __init__(self, response):
         self.total = response.get("total_count")
         self.incomplete = response.get("incomplete_results")
-        self.items = [GHSearchItem(item) for item in response['items']]
+        self.items = [GHSearchItem(item) for item in response.get('items')]
+        self.wait = False
 
     @classmethod
     def from_json(cls, json):
