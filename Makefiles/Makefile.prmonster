@@ -1,6 +1,7 @@
 TMP_DIR?=/tmp/pointillism_prs
 FILE?=test/fixtures/tg.repos
 REPORTS?=logs/repos/reports
+HEXO?=hexo
 
 daily: search leads
 search:
@@ -30,11 +31,11 @@ run: clean
 
 reports:
 	mkdir reports
-	cd reports; hexo init
+	cd reports; $(HEXO) init
 
 reportsInstall: reports
 	cp -rf $(REPORTS)/* reports/source/_posts
-	cd reports; hexo generate
+	cd reports; $(HEXO) generate
 	cp -rf reports/public/* /var/www/html/reports
 
 
