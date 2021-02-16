@@ -1,5 +1,7 @@
 import logging
 import json
+from time import sleep
+from datetime import datetime
 from os import environ
 from http.client import HTTPSConnection
 from base64 import b64encode, b64decode
@@ -26,6 +28,7 @@ DEFAULT_PARAMS = dict(
 URL = '/search/code?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()])
 URL2 = '/search?' + '&'.join([f"{k}={v}" for k, v in DEFAULT_PARAMS.items()])
 LAST_COMMIT = 'https://api.github.com/repos/%s/commits'
+REPO_INFO = 'https://api.github.com/repos/%s'
 
 USER_DOT_FILE_SEARCH = "user%3Agithub+user%3Aatom+user%3Aelectron+user%3Aoctokit+user%3Atwitter+extension%3Adot+extension%3Agv&type=code"
 DOT_FILE_SEARCH = "l=&o=desc&q=extension%3Adot+extension%3Agv&s=indexed&type=Code"
@@ -55,6 +58,16 @@ class GitHubContent:
             return b64decode(json.loads(resp.read())['content'])\
                 .decode("utf8")
 
+    def repo_info(self, repo_s):
+        url = REPO_INFO % (repo_s)
+        self.conn.request('GET', url, headers=HEADERS)
+        resp = self.conn.getresponse()
+        if resp.status == 200:
+            return json.loads(resp.read())
+            # repo.subscribers_count = data['watchers_count']
+            # repo.stargazers_count = data['watchers_count']
+            # repo.watchers_count = data['watchers_count']
+
     def last_author(self, repo):
         """
         :param repo: in format of {owner}/{project}
@@ -67,10 +80,12 @@ class GitHubContent:
             author = json.loads(resp.read())[0]['commit']['author']
             return author
 
+
 class GitHubFileSearchClient:
     """GitHub File Search Client"""
     def __init__(self):
         self.conn = HTTPSConnection(DOMAIN)
+        self.resume = None
 
     def url(self, query, page, params):
         # TODO confirm + over %20
@@ -86,11 +101,12 @@ class GitHubFileSearchClient:
 
         limit = resp.getheader('X-RateLimit-Limit')
         remaining = resp.getheader('X-RateLimit-Remaining')
-        resume = resp.getheader('X-RateLimit-Reset')
-        logging.info(f"Rate Limit: {remaining}/{limit}. Resume: {resume}")
+        self.resume = resp.getheader('X-RateLimit-Reset')
+        logging.info(f"Rate Limit: {remaining}/{limit}. Resume: {self.resume}")
         if resp.status == 200:
-            return GHSearchResponse.from_json(resp.read())
+            return GHSearchResponse.from_json(resp.read(), resume=self.resume)
         elif resp.status == 403:
             raise EnhanceCalm(resp.read())
         else:
             raise ClientException(f"{resp.status}: {resp.read()}")
+

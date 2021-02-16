@@ -6,6 +6,7 @@ import logging
 from config import PROJECT_ROOT
 from datetime import datetime
 from time import sleep
+from .models import RepoReport
 from .search import *
 
 logging.basicConfig(filename="/var/log/pointillism.prmonster.log")
@@ -56,56 +57,58 @@ def record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsup
         record(str(ref))
     fp.close()
 
+def record_reports(reports: list[RepoReport]):
+    fp = open(REPORT_PATH, 'w')
+    fp.write(datetime.strftime(datetime.now(),
+                               "# Report: %Y-%m-%d\n\n"))
+    fp.write("## Repos\n\n")
+    fp.write("| repo | followers | dots | refs | author | link |\n")
+    fp.write("| ---- | --------- | ---- | ---- | ------ | ---- |\n")
 
-class RepoReport:
-    def __init__(self, repo, dots, dot_refs, author):
-        self.repo = repo
-        self.dots = dots
-        self.dot_refs = dot_refs
-        self.author = author
+    for report in reports:
+        fp.write("| " + " | ".join(map(str, (
+            report.repo,
+            report.followers,
+            len(report.dots),
+            len(report.dot_refs.items),
+            report.author,
+            f"[link](https://github.com/{report.repo})"
+            ))) + "\n")
 
-    def save(self):
-        report = open(REPORT_PATH, 'w')
-        report.write(datetime.strftime(datetime.now(),
-                                       "# Report: %Y-%m-%d\n\n"))
-        report.write("## Repos\n\n")
-        report.write("| repo | dots | refs | author | link |\n")
-        report.write("| ---- | ---- | ---- | ------ | ---- |\n")
-
-        for report in self.reports:
-            report.write(f"| {repo} | {len(dots)} | {len(dot_refs.items)} | {author}| [link](https://github.com/{repo}) |\n")
-
-        report.write("\n")
-        report.write("Repo Count: %s\n", str(repo_count))
-        report.close()
+    fp.write("\n")
+    fp.write(f"Repo Count: {str(len(reports))}\n")
+    fp.close()
 
 
 def find_dot_repos(user=None):
     repo_count = 0
     target_repos = []
     page = 0
-    report = open(REPORT_PATH, 'w')
-    report.write(datetime.strftime(datetime.now(),
-                                   "# Report: %Y-%m-%d\n\n"))
-    report.write("## Repos\n\n")
-    report.write("| repo | dots | refs | author | link |\n")
-    report.write("| ---- | ---- | ---- | ------ | ---- |\n")
+    resume = 0
 
+    resp = None
     while page < PAGE_MAX:
+        # try:
+        # if resp is not None and resp.wait:
+        #     logging.info(f"Waiting until {int(datetime.utcnow().timestamp())} > {resp.resume}")
+        #     sleep(5)
+        #     resume = resp.resume
+        #     raise EnhanceCalm(f"Waiting until {int(datetime.utcnow().timestamp())} > {resp.resume}")
         args = {}
         if user is not None:
             args['user'] = user
-
         resp = CLIENT.search(DOT_FILE_SEARCH, page, **args)
         logging.info(resp)
         if not resp.repos():
             break
 
+        reports = []
         for repo in resp.repos():
+            # repo is a str
+            repo_info = CONTENT.repo_info(repo)
             owner, project = repo.split('/')
             dots = list(filter(lambda i: repo == i.repo, resp.items))
             author = ":".join(list(CONTENT.last_author(repo).values()))
-
             repo_count += 1
             target_docs = []
             unsupported = []
@@ -124,19 +127,22 @@ def find_dot_repos(user=None):
                 else:
                     unsupported.append(ref)
 
-            report.write(f"| {repo} | {len(dots)} | {len(dot_refs.items)} | {author}| [link](https://github.com/{repo}) |\n")
+            reports.append(
+                RepoReport(repo, dots, dot_refs, author, repo_info)
+            )
+
+            record_reports(reports)
             record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported)
         log_repos(target_repos)
 
         page += 1
         sleep(1)
+        # except EnhanceCalm as err:
+        #     logging.info(err)
 
-    report.write("\n")
-    report.write("Repo Count: %s\n", str(repo_count))
-    report.close()
 
     with open(f'{REPO_DOC_PATH}/repo.counts', 'a+') as fp:
         fp.write(datetime.strftime(datetime.now(), "%Y-%m-%d"))
         fp.write("\t")
-        fp.write(str(repo_count))
+        fp.write(str(len(reports)))
         fp.write("\n")
