@@ -87,6 +87,7 @@ def find_dot_repos(user=None):
     resume = 0
 
     resp = None
+    reports = []
     while page < PAGE_MAX:
         # try:
         # if resp is not None and resp.wait:
@@ -102,7 +103,6 @@ def find_dot_repos(user=None):
         if not resp.repos():
             break
 
-        reports = []
         for repo in resp.repos():
             # repo is a str
             repo_info = CONTENT.repo_info(repo)
@@ -133,6 +133,7 @@ def find_dot_repos(user=None):
 
             record_reports(reports)
             record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported)
+            sleep(15)
         log_repos(target_repos)
 
         page += 1
