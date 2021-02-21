@@ -1,7 +1,9 @@
 from os import environ
 import logging
 from . import find_dot_repos
+import telemetry
 
+telemetry.add_handler(telemetry.clients.SlackTelemeter(token=None))
 logging.basicConfig(level=logging.DEBUG,
                     filename="logs/github_search.log",
                     format="%(asctime)s:%(levelname)s:%(message)s"

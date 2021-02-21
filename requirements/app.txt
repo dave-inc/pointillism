@@ -7,3 +7,5 @@ flask-simpleldap==1.4.0
 PyGithub==1.47
 pybrake==0.4.6
 lxml==4.5.1
+telemetry==0.3.6
+telemetry[slack]
