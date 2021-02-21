@@ -3,7 +3,7 @@ FILE?=test/fixtures/tg.repos
 REPORTS?=logs/repos/reports
 HEXO?=hexo
 
-daily: search leads
+daily: search
 search:
 	mkdir -p $(REPORTS)
 	python3 -m prmonster.github
