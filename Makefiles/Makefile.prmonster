@@ -38,6 +38,8 @@ reports:
 reportsInstall: reports
 	cp -rf $(REPORTS)/* reports/source/_posts
 	cd reports; $(HEXO) generate
+	sed -e  's/title:.*/title: pt reports/' _config.yml > config.tmp
+	sed -e  's/root:.*/root: \/reports\//' config.tmp > _config.yml
 	cp -rf reports/public/* /var/www/html/reports
 
 
