@@ -62,17 +62,16 @@ def record_reports(reports): #  list[RepoReport]):
     fp.write(datetime.strftime(datetime.now(),
                                "# Report: %Y-%m-%d\n\n"))
     fp.write("## Repos\n\n")
-    fp.write("| repo | followers | dots | refs | author | link |\n")
-    fp.write("| ---- | --------- | ---- | ---- | ------ | ---- |\n")
+    fp.write("| repo | followers | dots | refs | author |\n")
+    fp.write("| ---- | --------- | ---- | ---- | ------ |\n")
 
     for report in reports:
         fp.write("| " + " | ".join(map(str, (
-            report.repo,
+            f"[{report.repo}](https://github.com/{report.repo})",
             report.followers,
             len(report.dots),
             len(report.dot_refs.items),
             report.author,
-            f"[link](https://github.com/{report.repo})"
             ))) + "\n")
 
     fp.write("\n")
