@@ -30,8 +30,6 @@ class TestCRM:
 
     def test_insert_select(self, conn, repo):
         conn.insert(repo)
-        results = conn.select(repo)
+        results = conn.select(Repo)
         results = [result for result in results]
         assert 1 == len(results)
-
-
