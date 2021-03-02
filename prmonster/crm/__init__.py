@@ -6,7 +6,10 @@ DB_FILE = 'data/leads.db'
 
 
 def table_from(o):
-    return o.__class__.__name__.lower() + 's'
+    if isinstance(o, type):
+        return o.__name__.lower() + 's'
+    else:
+        return o.__class__.__name__.lower() + 's'
 
 
 def fields_from(o):
@@ -42,7 +45,8 @@ class Connection:
 
     def insert(self, o):
         query = f"""
-        INSERT INTO {table_from(o)} ({fields_from(o)}) 
+        INSERT INTO {table_from(o)}
+        ({fields_from(o)}) 
         VALUES ({values_from(o)})"""
         self.conn.execute(query)
         self.conn.commit()
