@@ -1,15 +1,20 @@
 import sqlite3
 from os.path import exists
 from .models import CREATE_SQL
+from .models import *
 
 DB_FILE = 'data/leads.db'
 
 
-def table_from(o):
+def get_type(o):
     if isinstance(o, type):
-        return o.__name__.lower() + 's'
+        return o
     else:
-        return o.__class__.__name__.lower() + 's'
+        return o.__class__
+
+
+def table_from(o):
+    return get_type(o).__name__.lower() + 's'
 
 
 def fields_from(o):
@@ -44,10 +49,18 @@ class Connection:
             self.conn.commit()
 
     def insert(self, o):
+        # use upsert
         query = f"""
         INSERT INTO {table_from(o)}
         ({fields_from(o)}) 
         VALUES ({values_from(o)})"""
+
+        """
+        ON CONFLICT({o.unique}) 
+        DO UPDATE SET
+            {field_update_from(o)}
+        --WHERE excluded.validDate>phonebook2.validDate;
+        """
         self.conn.execute(query)
         self.conn.commit()
 
@@ -55,4 +68,16 @@ class Connection:
 
     def select(self, o, **params):
         query = f"""SELECT * FROM {table_from(o)}"""
-        return self.conn.execute(query)
+        results = self.conn.execute(query)
+        for result in results:
+            yield get_type(o)(*result)
+
+
+CONN = Connection()
+
+
+def save_report(report):
+    CONN.insert(Repo(
+        name=repo.name,
+        owner=repo.owner
+    ))

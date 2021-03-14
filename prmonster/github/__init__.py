@@ -8,6 +8,7 @@ from datetime import datetime
 from time import sleep
 from .models import RepoReport
 from .search import *
+from prmonster import crm
 
 logging.basicConfig(filename="/var/log/pointillism.prmonster.log")
 log = logging.getLogger().info
@@ -21,7 +22,6 @@ CONTENT = GitHubContent()
 PAGE_MAX = 100
 SUPPORTED_DOCS = ('md',) # , 'rst')
 TAB = "\t"
-
 
 def log_repos(target_repos):
     log("======= discovered ======")
@@ -44,7 +44,7 @@ def log_repos(target_repos):
                              )))
 
 
-def record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported, report):
+def log_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported, report):
     fp = open(f'{REPO_DOC_PATH}/{owner}-{project}', 'w')
     record = lambda msg: fp.write(f"{msg}\n")
     record(f"# REPO: {repo} dots: {len(dots)} refs: {len(dot_refs.items)} {author}")
@@ -57,7 +57,7 @@ def record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsup
         record("- " + str(ref))
     fp.close()
 
-def record_reports(reports): #  list[RepoReport]):
+def log_reports(reports): #  list[RepoReport]):
     fp = open(REPORT_PATH, 'w')
     fp.write(datetime.strftime(datetime.now(),
                                "# Report: %Y-%m-%d\n\n"))
@@ -112,11 +112,9 @@ def find_dot_repos(user=None):
             target_docs = []
             unsupported = []
 
-            dot_refs = CLIENT.search("*.png", repo=repo)
-            # + CLIENT.search("*.svg", repo=repo)
+            dot_refs = CLIENT.search("*.png", repo=repo)  # + CLIENT.search("*.svg", repo=repo)
             if not dot_refs:
-                target_repos.append([repo, None
-                                     ] + dots)
+                target_repos.append([repo, None] + dots)
             for ref in dot_refs.items:
                 if ref.filetype() in SUPPORTED_DOCS:
                     target_docs.append(ref)
@@ -129,8 +127,10 @@ def find_dot_repos(user=None):
             report = RepoReport(repo, dots, dot_refs, author, repo_info)
             reports.append(report)
 
-            record_reports(reports)
-            record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported, report)
+            for report in reports:
+                crm.save_report(report)
+            log_reports(reports)
+            log_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported, report)
             sleep(15)
         log_repos(target_repos)
 

@@ -1,3 +1,7 @@
+"""
+    Make pointillism.io PRs for a list of repos.
+"""
+
 import logging
 from subprocess import CalledProcessError
 from os.path import exists

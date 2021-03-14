@@ -34,14 +34,20 @@ class Lead:
     owner: str
 
 class Repo:
-    def __init__(self, id=None, owner=None):
+    def __init__(self,
+                 id=None,
+                 _um=None,
+                 owner=None,
+                 name=None,
+                 *args):
         self.id = id
         self.owner = owner
+        self.name = name
 
     lead_id: int
-    name: str
     dot_count: int
     ref_count: int
+
 
 class Resource:
     id: int
