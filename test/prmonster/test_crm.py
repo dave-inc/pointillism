@@ -1,7 +1,7 @@
 from pytest import fixture
 from os import remove
 from prmonster import crm
-from prmonster.crm import Connection, save_report
+from prmonster.crm import Connection, save_report, all_repos, all_resources
 from prmonster.crm.models import Repo
 from prmonster.github.models import RepoReport
 
@@ -44,3 +44,6 @@ class TestCRM:
         repo_info = None
         report = RepoReport(repo, dots, dot_refs, author, repo_info)
         save_report(report)
+
+        repos = all_repos()
+        # assert 1 == len([repo for repo in repos])

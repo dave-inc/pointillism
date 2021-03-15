@@ -44,15 +44,22 @@ class Repo:
         self.owner = owner
         self.name = name
 
-    lead_id: int
-    dot_count: int
-    ref_count: int
+    def __repr__(self):
+        return f"Repo({self.id}):" + " ".join((self.owner,
+                                               self.name))
 
 
 class Resource:
-    id: int
-    repo_id: int
-    filename: str
+    def __init__(self, id=None, repo_id=None, filename=None):
+        self.id = id
+        self.repo_id = repo_id
+        self.filename = filename
+
+    def __repr__(self):
+        return f"Resource({self.id}: " + " ".join((
+            str(self.repo_id), self.filename
+        ))
+
 
 class Ref:
     file_id: int

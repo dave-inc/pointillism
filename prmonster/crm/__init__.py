@@ -1,7 +1,7 @@
 import sqlite3
 from os.path import exists
 from .models import CREATE_SQL
-from .models import Repo
+from .models import Repo, Resource
 
 DB_FILE = 'data/leads.db'
 
@@ -63,10 +63,11 @@ class Connection:
             {field_update_from(o)}
         --WHERE excluded.validDate>phonebook2.validDate;
         """
-        self.conn.execute(query)
+        cursor = self.conn.cursor()
+        cursor.execute(query)
+        id_ = cursor.lastrowid
         self.conn.commit()
-
-        return True
+        return id_
 
     def select(self, o, **params):
         query = f"""SELECT * FROM {table_from(o)}"""
@@ -79,7 +80,19 @@ CONN = Connection()
 
 
 def save_report(report):
-    CONN.insert(Repo(
-        name=report.repo.name,
-        owner=report.repo.owner
+    name, owner = report.repo.split("/") # TODO drop this line
+    repo_id = CONN.insert(Repo(
+        name=name,
+        owner=owner
     ))
+    for res in report.dots: # + report.dot_refs:
+        CONN.insert(Resource(
+            repo_id=repo_id,
+            filename=str(res)
+        ))
+
+def all_repos():
+    return CONN.select(Repo)
+
+def all_resources():
+    return CONN.select(Resource)
