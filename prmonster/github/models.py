@@ -95,9 +95,6 @@ class RepoReport:
             info['watchers_count']
         )))
 
-    def __str__(self):
-        return f"{self.followers}"
-
     def save(self):
         report = open(REPORT_PATH, 'w')
         report.write(datetime.strftime(datetime.now(),
@@ -112,4 +109,5 @@ class RepoReport:
         report.write("Repo Count: %s\n", str(repo_count))
         report.close()
 
-
+    def __str__(self):
+        return f"{self.followers}"

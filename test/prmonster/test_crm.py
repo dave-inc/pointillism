@@ -42,7 +42,7 @@ class TestCRM:
         dot_refs = []
         author = 'bob'
         repo_info = None
-        report = RepoReport(repo, dots, dot_refs, author, repo_info)
+        report = RepoReport('angus/macgyver', dots, dot_refs, author, repo_info)
         save_report(report)
 
         repos = all_repos()

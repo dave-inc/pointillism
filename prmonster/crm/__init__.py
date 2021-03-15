@@ -69,11 +69,16 @@ class Connection:
         self.conn.commit()
         return id_
 
-    def select(self, o, **params):
-        query = f"""SELECT * FROM {table_from(o)}"""
+    def select(self, o=None, query=None, cast=False, **params):
+        if query is None:
+            cast = True
+            query = f"""SELECT * FROM {table_from(o)}"""
         results = self.conn.execute(query)
+
         for result in results:
-            yield get_type(o)(*result)
+            if cast:
+                yield get_type(o)(*result)
+            yield result
 
 
 CONN = Connection()
