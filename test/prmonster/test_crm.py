@@ -1,8 +1,9 @@
 from pytest import fixture
 from os import remove
 from prmonster import crm
-from prmonster.crm import Connection
+from prmonster.crm import Connection, save_report
 from prmonster.crm.models import Repo
+from prmonster.github.models import RepoReport
 
 DB_FILE = 'test/fixtures/test.db'
 
@@ -35,3 +36,11 @@ class TestCRM:
         assert 1 == results[0].id
         # assert results[0].owner == 'angus'
         assert 1 == len(results)
+
+    def test_save_report(self, repo):
+        dots = []
+        dot_refs = []
+        author = 'bob'
+        repo_info = None
+        report = RepoReport(repo, dots, dot_refs, author, repo_info)
+        save_report(report)

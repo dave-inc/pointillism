@@ -1,7 +1,7 @@
 import sqlite3
 from os.path import exists
 from .models import CREATE_SQL
-from .models import *
+from .models import Repo
 
 DB_FILE = 'data/leads.db'
 
@@ -33,6 +33,8 @@ def values_from(o):
     for field in vars(o).values():
         if isinstance(field, int):
             fields += f', {field}'
+        elif field is None:
+            fields += ", NULL"
         else:
             fields += f', "{field}"'
 
@@ -78,6 +80,6 @@ CONN = Connection()
 
 def save_report(report):
     CONN.insert(Repo(
-        name=repo.name,
-        owner=repo.owner
+        name=report.repo.name,
+        owner=report.repo.owner
     ))
