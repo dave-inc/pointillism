@@ -56,7 +56,7 @@ class Repo:
                  subscribers=None,
                  starred=None,
                  watchers=None,
-                 *args):
+                 *args, **repo_info):
         self.id = id
         self.owner = owner
         self.name = name
@@ -65,9 +65,18 @@ class Repo:
         self.starred     = starred
         self.watchers    = watchers
 
+        if repo_info:
+            self.subscribers = repo_info.get('subscribers_count')
+            self.starred = repo_info.get('stargazers_count')
+            self.watchers = repo_info.get('watchers_count')
+
+    @property
+    def repo_s(self):
+        return f"{self.owner}/{self.name}"
+
     def __repr__(self):
-        return f"Repo({self.id}):" + " ".join((self.owner,
-                                               self.name))
+        return f"Repo({self.id}):" + " ".join(map(str, (self.owner,
+                                                  self.name)))
 
 
 class Resource:

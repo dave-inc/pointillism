@@ -67,7 +67,7 @@ def log_reports(reports): #  list[RepoReport]):
 
     for report in reports:
         fp.write("| " + " | ".join(map(str, (
-            f"[{report.repo}](https://github.com/{report.repo})",
+            f"[{report.repo.repo_s}](https://github.com/{report.repo.repo_s})",
             report.followers,
             len(report.dots),
             len(report.dot_refs.items),
@@ -102,23 +102,24 @@ def find_dot_repos(user=None):
         if not resp.repos():
             break
 
-        for repo in resp.repos():
-            # repo is a str
-            repo_info = CONTENT.repo_info(repo)
-            owner, project = repo.split('/')
-            dots = list(filter(lambda i: repo == i.repo, resp.items))
-            author = ":".join(list(CONTENT.last_author(repo).values()))
+        for repo_s in resp.repos():
+            repo_info = CONTENT.repo_info(repo_s)
+            owner, project = repo_s.split('/')
+            repo = crm.models.Repo(owner=owner, name=project,
+                                   repo_info=repo_info)
+            dots = list(filter(lambda i: repo_s == i.repo, resp.items))
+            author = ":".join(list(CONTENT.last_author(repo_s).values()))
             repo_count += 1
             target_docs = []
             unsupported = []
 
-            dot_refs = CLIENT.search("*.png", repo=repo)  # + CLIENT.search("*.svg", repo=repo)
+            dot_refs = CLIENT.search("*.png", repo=repo_s)  # + CLIENT.search("*.svg", repo=repo_s)
             if not dot_refs:
-                target_repos.append([repo, None] + dots)
+                target_repos.append([repo_s, None] + dots)
             for ref in dot_refs.items:
                 if ref.filetype() in SUPPORTED_DOCS:
                     target_docs.append(ref)
-                    target_repos.append([repo,
+                    target_repos.append([repo_s,
                                          ref
                                          ] + dots)
                 else:
@@ -130,7 +131,7 @@ def find_dot_repos(user=None):
             for report in reports:
                 crm.save_report(report)
             log_reports(reports)
-            log_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported, report)
+            log_repo(owner, project, repo_s, dots, dot_refs, author, target_docs, unsupported, report)
             sleep(15)
         log_repos(target_repos)
 

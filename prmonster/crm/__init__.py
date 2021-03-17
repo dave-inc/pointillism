@@ -85,10 +85,9 @@ CONN = Connection()
 
 
 def save_report(report):
-    name, owner = report.repo.split("/") # TODO drop this line
     repo_id = CONN.insert(Repo(
-        name=name,
-        owner=owner
+        name=report.repo.name,
+        owner=report.repo.owner
     ))
     for res in report.dots: # + report.dot_refs:
         CONN.insert(Resource(

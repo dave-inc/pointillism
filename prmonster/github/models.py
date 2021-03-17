@@ -104,7 +104,7 @@ class RepoReport:
         report.write("| ---- | ---- | ---- | ------ | ---- |\n")
 
         for report in self.reports:
-            report.write(f"| {repo} | {len(dots)} | {len(dot_refs.items)} | {author}| [link](https://github.com/{repo}) |\n")
+            report.write(f"| {repo.owner}/{repo.name} | {len(dots)} | {len(dot_refs.items)} | {author}| [link](https://github.com/{repo}) |\n")
 
         report.write("Repo Count: %s\n", str(repo_count))
         report.close()
