@@ -85,10 +85,7 @@ CONN = Connection()
 
 
 def save_report(report):
-    repo_id = CONN.insert(Repo(
-        name=report.repo.name,
-        owner=report.repo.owner
-    ))
+    repo_id = CONN.insert(report.repo)
     for res in report.dots: # + report.dot_refs:
         CONN.insert(Resource(
             repo_id=repo_id,

@@ -66,9 +66,10 @@ class Repo:
         self.watchers    = watchers
 
         if repo_info:
-            self.subscribers = repo_info.get('subscribers_count')
-            self.starred = repo_info.get('stargazers_count')
-            self.watchers = repo_info.get('watchers_count')
+            info = repo_info['repo_info']
+            self.subscribers = info['subscribers_count']
+            self.starred = info['stargazers_count']
+            self.watchers = info['watchers_count']
 
     @property
     def repo_s(self):
