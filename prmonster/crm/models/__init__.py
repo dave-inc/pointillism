@@ -20,8 +20,10 @@ CREATE TABLE repos (
   lead_id INTEGER,
   owner VARCHAR(255), -- github account
   name VARCHAR(255),  -- project name
-  dot_count INTEGER,
-  ref_count INTEGER
+  subscribers INTEGER,
+  starred INTEGER,
+  watchers INTEGER,
+  author VARCHAR(255) 
 );""",
 """
 CREATE TABLE resources (
@@ -50,10 +52,18 @@ class Repo:
                  _um=None,
                  owner=None,
                  name=None,
+                 author=None,
+                 subscribers=None,
+                 starred=None,
+                 watchers=None,
                  *args):
         self.id = id
         self.owner = owner
         self.name = name
+        self.author      = author
+        self.subscribers = subscribers
+        self.starred     = starred
+        self.watchers    = watchers
 
     def __repr__(self):
         return f"Repo({self.id}):" + " ".join((self.owner,
