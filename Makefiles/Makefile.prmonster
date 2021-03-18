@@ -32,6 +32,8 @@ run: clean
 reports:
 	mkdir reports
 	cd reports; $(HEXO) init
+	cd reports; sed -e  's/title:.*/title: pt reports/' _config.yml > config.tmp
+	cd reports; sed -e  's/root:.*/root: \/reports\//' config.tmp > _config.yml
 
 reportsInstall: reports
 	cp -rf $(REPORTS)/* reports/source/_posts

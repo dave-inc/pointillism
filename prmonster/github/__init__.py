@@ -57,7 +57,7 @@ def record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsup
         record(str(ref))
     fp.close()
 
-def record_reports(reports: list[RepoReport]):
+def record_reports(reports):
     fp = open(REPORT_PATH, 'w')
     fp.write(datetime.strftime(datetime.now(),
                                "# Report: %Y-%m-%d\n\n"))
@@ -67,12 +67,11 @@ def record_reports(reports: list[RepoReport]):
 
     for report in reports:
         fp.write("| " + " | ".join(map(str, (
-            report.repo,
+            f"[{report.repo}](https://github.com/{report.repo})",
             report.followers,
             len(report.dots),
             len(report.dot_refs.items),
             report.author,
-            f"[link](https://github.com/{report.repo})"
             ))) + "\n")
 
     fp.write("\n")
