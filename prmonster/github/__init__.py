@@ -108,7 +108,11 @@ def find_dot_repos(user=None):
             repo = crm.models.Repo(owner=owner, name=project,
                                    repo_info=repo_info)
             dots = list(filter(lambda i: repo_s == i.repo, resp.items))
-            author = ":".join(list(CONTENT.last_author(repo_s).values()))
+            last_author = CONTENT.last_author(repo_s)
+            if last_author:
+                author = ":".join(list(last_author.values()))
+            else:
+                author = ""
             repo_count += 1
             target_docs = []
             unsupported = []
