@@ -1,3 +1,4 @@
+import logging
 import sqlite3
 from os.path import exists
 from .models import CREATE_SQL
@@ -85,7 +86,12 @@ CONN = Connection()
 
 
 def save_report(report):
-    repo_id = CONN.insert(report.repo)
+    try:
+        repo_id = CONN.insert(report.repo)
+    except sqlite3.IntegrityError:
+        logging.info(f"Repo exists: {report.repo}")
+        return
+
     for res in report.dots: # + report.dot_refs:
         CONN.insert(Resource(
             repo_id=repo_id,

@@ -1,3 +1,12 @@
+REPO_SORT = """
+SELECT *
+FROM repos rep
+ORDER BY 
+    subscribers DESC,
+    starred DESC,
+    watchers DESC
+"""
+
 RESOURCE_SELECT = """
 SELECT 
     res.filename,
@@ -23,18 +32,21 @@ CREATE TABLE repos (
   subscribers INTEGER,
   starred INTEGER,
   watchers INTEGER,
-  author VARCHAR(255) 
+  author VARCHAR(255),
+  UNIQUE(owner, name)
 );""",
 """
 CREATE TABLE resources (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   repo_id INTEGER,        -- repo which hold this file
-  filename VARCHAR(255)
+  filename VARCHAR(255),
+  UNIQUE(filename)
 );""",
 """
 CREATE TABLE refs (
   file_id INTEGER,
-  ref_file INTEGER
+  ref_file INTEGER,
+  UNIQUE(file_id, ref_file)
 );"""
 ]
 

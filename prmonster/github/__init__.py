@@ -97,7 +97,7 @@ def find_dot_repos(user=None):
         args = {}
         if user is not None:
             args['user'] = user
-        resp = CLIENT.search(DOT_FILE_SEARCH, page, **args)
+        resp = CLIENT.search(DOT_FILE_SEARCH, page=page, **args)
         logging.info(resp)
         if not resp.repos():
             break
@@ -133,8 +133,6 @@ def find_dot_repos(user=None):
             log_reports(reports)
             log_repo(owner, project, repo_s, dots, dot_refs, author, target_docs, unsupported, report)
             sleep(15)
-        log_repos(target_repos)
-
         page += 1
         sleep(1)
         # except EnhanceCalm as err:
