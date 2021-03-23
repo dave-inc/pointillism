@@ -1,27 +1,24 @@
-REPO_SORT = """
-SELECT *
-FROM repos rep
-ORDER BY 
-    subscribers DESC,
-    starred DESC,
-    watchers DESC
-"""
+from os import path, environ
 
-RESOURCE_SELECT = """
-SELECT 
-    res.filename,
-    rep.owner,
-    rep.name
-FROM resources res
-JOIN repos rep ON rep.id = res.repo_id
-"""
+SQL_PATH = environ.get("SQL_PATH",
+                       path.dirname(__file__) +\
+                       "/../sql/%s.sql")
+
+def load_sql(name):
+    return open(SQL_PATH % name, 'r').read()
+
+REPO_COUNT = load_sql('repo_count')
+REPO_SORT = load_sql('repos')
+RESOURCE_SELECT = load_sql("resources")
 
 CREATE_SQL = ["""
 CREATE TABLE leads (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email VARCHAR(255),
   name VARCHAR(255),
-  owner VARCHAR(255)
+  owner VARCHAR(255),
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP
 );""",
 """
 CREATE TABLE repos (
@@ -33,6 +30,8 @@ CREATE TABLE repos (
   starred INTEGER,
   watchers INTEGER,
   author VARCHAR(255),
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP,
   UNIQUE(owner, name)
 );""",
 """
@@ -40,6 +39,8 @@ CREATE TABLE resources (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   repo_id INTEGER,        -- repo which hold this file
   filename VARCHAR(255),
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP,
   UNIQUE(filename)
 );""",
 """

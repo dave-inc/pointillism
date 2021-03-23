@@ -1,7 +1,7 @@
 import logging
 import sqlite3
 from os.path import exists
-from .models import CREATE_SQL
+from .models import CREATE_SQL, REPO_COUNT
 from .models import Repo, Resource
 
 DB_FILE = 'data/leads.db'
@@ -81,7 +81,6 @@ class Connection:
                 yield get_type(o)(*result)
             yield result
 
-
 CONN = Connection()
 
 
@@ -103,3 +102,6 @@ def all_repos():
 
 def all_resources():
     return CONN.select(Resource)
+
+def repo_count():
+    return next(CONN.select(query=REPO_COUNT))[0]
