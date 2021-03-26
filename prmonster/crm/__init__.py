@@ -1,7 +1,7 @@
 import logging
 import sqlite3
 from os.path import exists
-from .models import CREATE_SQL, REPO_COUNT
+from .models import *
 from .models import Repo, Resource
 
 DB_FILE = 'data/leads.db'
@@ -50,6 +50,11 @@ class Connection:
             for q in CREATE_SQL:
                 self.conn.execute(q)
             self.conn.commit()
+
+    def execute(self, query):
+        self.conn.execute(query)
+        self.conn.commit()
+        return True
 
     def insert(self, o):
         # use upsert
@@ -105,3 +110,7 @@ def all_resources():
 
 def repo_count():
     return next(CONN.select(query=REPO_COUNT))[0]
+
+def repos_over_days():
+    return [row for row
+            in CONN.select(query=REPOS_OVER_DAYS)]

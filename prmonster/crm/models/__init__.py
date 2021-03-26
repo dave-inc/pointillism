@@ -10,6 +10,7 @@ def load_sql(name):
 REPO_COUNT = load_sql('repo_count')
 REPO_SORT = load_sql('repos')
 RESOURCE_SELECT = load_sql("resources")
+REPOS_OVER_DAYS = load_sql('repos_over_days')
 
 CREATE_SQL = ["""
 CREATE TABLE leads (
