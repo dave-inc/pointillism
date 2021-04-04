@@ -9,6 +9,7 @@ def load_sql(name):
 
 REPO_COUNT = load_sql('repo_count')
 REPO_SORT = load_sql('repos')
+REPOS_TOP = load_sql('repos_top')
 RESOURCE_SELECT = load_sql("resources")
 REPOS_OVER_DAYS = load_sql('repos_over_days')
 
