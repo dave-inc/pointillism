@@ -79,6 +79,38 @@ def log_reports(reports): #  list[RepoReport]):
     fp.close()
 
 
+def repo_describe(repo_s):
+    repo_info = CONTENT.repo_info(repo_s)
+    owner, project = repo_s.split('/')
+    repo = crm.models.Repo(owner=owner, name=project,
+                           repo_info=repo_info)
+    dots = []
+    # dots = list(filter(lambda i: repo_s == i.repo, resp.items))
+    last_author = CONTENT.last_author(repo_s)
+    if last_author:
+        author = ":".join(list(last_author.values()))
+    else:
+        author = ""
+    target_docs = []
+    unsupported = []
+
+    dot_refs = CLIENT.search("*.png", repo=repo_s)  # + CLIENT.search("*.svg", repo=repo_s)
+    if not dot_refs:
+        target_repos.append([repo_s, None] + dots)
+    for ref in dot_refs.items:
+        if ref.filetype() in SUPPORTED_DOCS:
+            target_docs.append(ref)
+            target_repos.append([repo_s,
+                                 ref
+                                 ] + dots)
+        else:
+            unsupported.append(ref)
+
+    report = RepoReport(repo, dots, dot_refs, author, repo_info)
+
+    return report
+
+
 def find_dot_repos(user=None):
     repo_count = 0
     target_repos = []
