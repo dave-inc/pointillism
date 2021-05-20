@@ -13,7 +13,6 @@ import GettingStarted from './GettingStarted';
 import Repos from './Repos';
 import About from './About';
 import DOTDetail from './DOTDetail';
-import Draw from './Draw';
 import PayPalConfirm from './payments/PayPalConfirm';
 
 import {
@@ -83,7 +82,6 @@ export default function TabNav({host, domain, repos, username}) {
 
   routes = [...routes, ...[
     <Route path="/detail"><DOTDetail /></Route>,
-    <Route path="/draw"><Draw /></Route>,
     <Route path="/paypal/confirm" component={PayPalConfirm} />,
     <Route path="/getting-started"><GettingStarted host={host} domain={domain}/></Route>,
     <Route path="/about"><About/></Route>,
@@ -95,7 +93,6 @@ export default function TabNav({host, domain, repos, username}) {
       <Router>
         <AppBar position="static">
           <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-            <Tab label="Draw" component={Link} to="/draw" />
             <Tab label="Mission" component={Link} to="/" />
             <Tab label="Getting Started" component={Link} to="/getting-started" />
             <Tab label="About" component={Link} to="/about" />
