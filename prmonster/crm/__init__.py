@@ -84,7 +84,8 @@ class Connection:
         for result in results:
             if cast:
                 yield get_type(o)(*result)
-            yield result
+            else:
+                yield result
 
 CONN = Connection()
 
