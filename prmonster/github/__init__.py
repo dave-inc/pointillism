@@ -115,17 +115,8 @@ def find_dot_repos(user=None):
     repo_count = 0
     target_repos = []
     page = 0
-    resume = 0
-
-    resp = None
     reports = []
     while page < PAGE_MAX:
-        # try:
-        # if resp is not None and resp.wait:
-        #     logging.info(f"Waiting until {int(datetime.utcnow().timestamp())} > {resp.resume}")
-        #     sleep(5)
-        #     resume = resp.resume
-        #     raise EnhanceCalm(f"Waiting until {int(datetime.utcnow().timestamp())} > {resp.resume}")
         args = {}
         if user is not None:
             args['user'] = user
