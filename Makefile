@@ -135,3 +135,6 @@ version:
 
 validate: test integ image
 .PHONY: test legal status docs
+
+cliRender:
+	curl -H "Content-Type: dot" -X POST -d "@example.dot" http:/localhost:5001/render

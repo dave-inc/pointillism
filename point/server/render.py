@@ -100,3 +100,17 @@ def render_github_url(org, project, branch, path):
             'message': f"Exception finding document: {resource}. " +
                        'Is the repository private? Do you need a valid token?'
         }), 404
+
+
+@render_routes.route("/render", methods=['POST'])
+def render_payload():
+    user_id = 'anonymous'
+    body = request.data.decode()
+    render_params = {
+        "theme": request.args.get('theme'),
+        "format": 'svg'
+    }
+    resp = render(body, **render_params)
+    resp.headers = resp.headers
+    GAnalytics().pageview("/render", user_id)
+    return resp
