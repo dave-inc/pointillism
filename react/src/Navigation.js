@@ -14,6 +14,7 @@ import Repos from './Repos';
 import About from './About';
 import DOTDetail from './DOTDetail';
 import PayPalConfirm from './payments/PayPalConfirm';
+import WhiteBoard from './Whiteboard';
 
 import {
   BrowserRouter as Router,
@@ -47,7 +48,7 @@ TabPanel.propTypes = {
 };
 
 function loggedIn(username) {
-    return username !== undefined && username.length > 0;
+  return username !== undefined && username.length > 0;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -57,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TabNav({host, domain, repos, username}) {
+export default function TabNav({ host, domain, repos, username }) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -77,15 +78,16 @@ export default function TabNav({host, domain, repos, username}) {
       <Route path="/repos"><Repos repos={repos} /></Route>,
     ];
   } else {
-    tabs.push(<Tab label="login" href="/github/login"/>)
+    tabs.push(<Tab label="login" href="/github/login" />)
   }
 
   routes = [...routes, ...[
+    <Route path="/whiteboard"><WhiteBoard /></Route>,
     <Route path="/detail"><DOTDetail /></Route>,
     <Route path="/paypal/confirm" component={PayPalConfirm} />,
-    <Route path="/getting-started"><GettingStarted host={host} domain={domain}/></Route>,
-    <Route path="/about"><About/></Route>,
-    <Route path="/"><Manifesto host={host} domain={domain}/></Route>,
+    <Route path="/getting-started"><GettingStarted host={host} domain={domain} /></Route>,
+    <Route path="/about"><About /></Route>,
+    <Route path="/"><Manifesto host={host} domain={domain} /></Route>,
   ]];
 
   return (
@@ -101,7 +103,7 @@ export default function TabNav({host, domain, repos, username}) {
         </AppBar>
         <Switch>{routes}</Switch>
       </Router>
-      
+
     </div>
   );
 }

@@ -19,7 +19,8 @@ IS_DEV = (ENV == "develop")
 
 LANDING_ROUTES = [
     "/profile", "/account", "/repos", "/getting-started",
-    "/about", "/contact", "/paypal/confirm", "/detail"
+    "/about", "/contact", "/paypal/confirm", "/detail",
+    "/whiteboard"
 ]
 
 app = Flask(__name__)
@@ -71,9 +72,10 @@ def welcome():
             email=email
         )
 
+
 for route in LANDING_ROUTES:
     app.route(route)(welcome)
 
 
 def run():
-    app.run(host='0.0.0.0', port=5001, debug=IS_DEV)
+    app.run(host='0.0.0.0', port=5001, debug=IS_DEV, threaded=True)
