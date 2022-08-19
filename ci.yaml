@@ -1,0 +1,8 @@
+images:
+  #  where is the file located?
+  - location: Dockerfile
+    #    are there extra build arguments?
+    extraArgs:
+      - '--target=main-app'
+      - '--secret=id=GH_READ_PACKAGES_PAT,env=GH_READ_PACKAGES_PAT'
+      -
