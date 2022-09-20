@@ -3,7 +3,7 @@ FILE?=test/fixtures/tg.repos
 REPORTS?=logs/repos/reports
 HEXO?=hexo
 
-daily: search leads
+daily: search
 search:
 	mkdir -p $(REPORTS)
 	python3 -m prmonster.github
@@ -36,6 +36,8 @@ reports:
 reportsInstall: reports
 	cp -rf $(REPORTS)/* reports/source/_posts
 	cd reports; $(HEXO) generate
+	sed -e  's/title:.*/title: pt reports/' _config.yml > config.tmp
+	sed -e  's/root:.*/root: \/reports\//' config.tmp > _config.yml
 	cp -rf reports/public/* /var/www/html/reports
 
 

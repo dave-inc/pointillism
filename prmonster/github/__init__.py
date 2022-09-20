@@ -44,35 +44,34 @@ def log_repos(target_repos):
                              )))
 
 
-def record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported):
+def record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported, report):
     fp = open(f'{REPO_DOC_PATH}/{owner}-{project}', 'w')
     record = lambda msg: fp.write(f"{msg}\n")
-    record("=========================")
-    record(f"PROCESSING REPO: {repo} dots: {len(dots)} refs: {len(dot_refs.items)} {author}")
-    record("========= dots ==========")
+    record(f"# REPO: {repo} dots: {len(dots)} refs: {len(dot_refs.items)} {author}")
+    record(str(report))
+    record("## dots\n\n")
     for dot in dots:
-        record(str(dot))
-    record("== dot file references ==")
+        record("- " + str(dot))
+    record("## dot file references\n\n")
     for ref in target_docs + unsupported:
-        record(str(ref))
+        record("- " + str(ref))
     fp.close()
 
-def record_reports(reports: list[RepoReport]):
+def record_reports(reports): #  list[RepoReport]):
     fp = open(REPORT_PATH, 'w')
     fp.write(datetime.strftime(datetime.now(),
                                "# Report: %Y-%m-%d\n\n"))
     fp.write("## Repos\n\n")
-    fp.write("| repo | followers | dots | refs | author | link |\n")
-    fp.write("| ---- | --------- | ---- | ---- | ------ | ---- |\n")
+    fp.write("| repo | followers | dots | refs | author |\n")
+    fp.write("| ---- | --------- | ---- | ---- | ------ |\n")
 
     for report in reports:
         fp.write("| " + " | ".join(map(str, (
-            report.repo,
+            f"[{report.repo}](https://github.com/{report.repo})",
             report.followers,
             len(report.dots),
             len(report.dot_refs.items),
             report.author,
-            f"[link](https://github.com/{report.repo})"
             ))) + "\n")
 
     fp.write("\n")
@@ -127,12 +126,11 @@ def find_dot_repos(user=None):
                 else:
                     unsupported.append(ref)
 
-            reports.append(
-                RepoReport(repo, dots, dot_refs, author, repo_info)
-            )
+            report = RepoReport(repo, dots, dot_refs, author, repo_info)
+            reports.append(report)
 
             record_reports(reports)
-            record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported)
+            record_repo(owner, project, repo, dots, dot_refs, author, target_docs, unsupported, report)
             sleep(15)
         log_repos(target_repos)
 
