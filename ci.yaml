@@ -1,0 +1,6 @@
+images:
+  #  where is the file located?
+  - location: Dockerfile
+    #    are there extra build arguments?
+    extraArgs:
+      -
